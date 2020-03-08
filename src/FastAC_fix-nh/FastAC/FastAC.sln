@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "acfile", "acfile\acfile.vcproj", "{2030AC0D-279F-44DB-AB38-84BEC9795EF3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "acwav", "acwav\acwav.vcproj", "{6509D2A6-F13A-4646-B45E-A2EA4D92AE93}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{21D1911B-EED1-473C-B1F2-8F52ADA63AC3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2030AC0D-279F-44DB-AB38-84BEC9795EF3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2030AC0D-279F-44DB-AB38-84BEC9795EF3}.Debug|Win32.Build.0 = Debug|Win32
+		{2030AC0D-279F-44DB-AB38-84BEC9795EF3}.Release|Win32.ActiveCfg = Release|Win32
+		{2030AC0D-279F-44DB-AB38-84BEC9795EF3}.Release|Win32.Build.0 = Release|Win32
+		{6509D2A6-F13A-4646-B45E-A2EA4D92AE93}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6509D2A6-F13A-4646-B45E-A2EA4D92AE93}.Debug|Win32.Build.0 = Debug|Win32
+		{6509D2A6-F13A-4646-B45E-A2EA4D92AE93}.Release|Win32.ActiveCfg = Release|Win32
+		{6509D2A6-F13A-4646-B45E-A2EA4D92AE93}.Release|Win32.Build.0 = Release|Win32
+		{21D1911B-EED1-473C-B1F2-8F52ADA63AC3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21D1911B-EED1-473C-B1F2-8F52ADA63AC3}.Debug|Win32.Build.0 = Debug|Win32
+		{21D1911B-EED1-473C-B1F2-8F52ADA63AC3}.Release|Win32.ActiveCfg = Release|Win32
+		{21D1911B-EED1-473C-B1F2-8F52ADA63AC3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
