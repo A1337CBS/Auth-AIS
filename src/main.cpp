@@ -1,61 +1,17 @@
 /* 
   main.cpp 
   @authors Ahmed Aziz
-  @Description: Transmitter program for implementing the AIS_Tesla Protocol PoC
-  @version 1.0 25/01/19
+  @Description: Transmitter program for implementing the AIS_CAESAR Protocol PoC
+  @version 1.0 25/02/19
 
-  Compile command, add flag -DPORT_SEND or -DPORT_RECEIVE to set another port, 
-  -DGEN_KEYS= true or false to set whether to generate keys or not
-  g++ -O2 main.cpp core-master/cpp/core.a -o main
-  g++ -O2 main.cpp core-master/cpp/core.a ./ais_receiver/*.c -o main
+  Compile command, add flag -DSECURITY_LEVEL to set another security level, example -DSECURITY_LEVEL=1 
   g++ -O2 main.cpp BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp core-master/cpp/core.a ./ais_receiver/*.c -o main
-  g++ -O2 main.cpp BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp core-master/cpp/core.a ./ais_receiver/*.c FastAC_fix-nh/FastAC/arithmetic_codec.cpp -o main
 **/
 /*Todo
-timeslot
-compression
-change name from main to transmitter
 fix message 4 encoding
 */
-//Generate key chain commit
-#include "stdafx.h"
 
-void process_mem_usage(double& vm_usage, double& resident_set)
-{
-   using std::ios_base;
-   using std::ifstream;
-   using std::string;
-
-   vm_usage     = 0.0;
-   resident_set = 0.0;
-
-   // 'file' stat seems to give the most reliable results
-   //
-   ifstream stat_stream("/proc/self/stat",ios_base::in);
-
-   // dummy vars for leading entries in stat that we don't care about
-   //
-   string pid, comm, state, ppid, pgrp, session, tty_nr;
-   string tpgid, flags, minflt, cminflt, majflt, cmajflt;
-   string utime, stime, cutime, cstime, priority, nice;
-   string O, itrealvalue, starttime;
-
-   // the two fields we want
-   //
-   unsigned long vsize;
-   long rss;
-
-   stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
-               >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
-               >> utime >> stime >> cutime >> cstime >> priority >> nice
-               >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
-
-   stat_stream.close();
-
-   long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
-   vm_usage     = vsize / 1024.0;
-   resident_set = rss * page_size_kb;
-}
+#include "main.h"
 
 
 /**	
@@ -108,7 +64,7 @@ string bintohex(const string &s){
  *
  *  @param int src_MMSI
  *  @param string payload
- *  @return binary string of message 6
+ *  @return binary string of message 8
  */
 string encode_ais_message_8(string payload, int src_mmsi=247320162){ 
     string type = std::bitset<6>(8).to_string(); 
@@ -123,6 +79,12 @@ string encode_ais_message_8(string payload, int src_mmsi=247320162){
     return type+repeat+mmsi+spare+appid_dac+appid_fi+payload;
 }
 
+/**	@brief Create an AIS Message of type 4
+ *
+ *  @param int src_MMSI
+ *  @param float spped
+ *  @return binary string of message 4
+ */
 string encode_ais_message_4(int src_mmsi=247320162, float speed=0.1, float __long=9.72357833333333, float __lat=45.6910166666667, float __course=83.4, int __ts=38){
   string _type = std::bitset<6>(4).to_string(); 
 	string _repeat = "00";										// repeat (directive to an AIS transceiver that this message should be rebroadcast.)
@@ -153,29 +115,6 @@ string encode_ais_message_4(int src_mmsi=247320162, float speed=0.1, float __lon
 	return _type+_repeat+_mmsi+std::bitset<23>(0).to_string()+_hour+_min+_sec+_accurancy+_long+_lat+_device+std::bitset<11>(0).to_string()+_rstatus;
 }
 
-
-//K = input Key, K0=output key, n=number of times to hash
-int generateKeyChainCommit(octet *K, octet *K0, int n, int key_size){ //octet *output
-
-  //create a temp octet
-  char tempOctet_K_size[2 * 16 + 1];
-  octet tempOctet = {0, sizeof(tempOctet_K_size), tempOctet_K_size};
-  //copy K into K0
-  OCT_copy(K0, K);
-
-  //Use hash function
-  for (int i=0; i<n; i++){
-    OCT_clear(K0);
-    SPhash(MC_SHA2, SHA256, &tempOctet, K0);
-    //copy temp octet into K0
-    tempOctet.len = key_size;
-    OCT_copy(K0, &tempOctet);
-  }
-
-  return 0;
-}
-
-
 /**	
  *  @brief send an ais message from socket to GNURadio
  *  @param message to be sent
@@ -191,17 +130,17 @@ int send_message_2_sock(string message){
 }
 
 /**
- * 	@brief Send AIS Tag function
- *  @param Ship Ship 1 data
- *  @param Ship_2 Ship 2 data
- *  @param type describe whether Ship 1 is transmitter = 1 or receiver = 2
- *  @param fd1 file descriptor of read socket
+ * 	@brief Send AIS Message function
+ *  @param message_sent Ship 1 data
+ *  @param payload Ship 2 data
+ *  @param ais_message_type describe whether Ship 1 is transmitter = 1 or receiver = 2
+ *  @param auth_tag_message file descriptor of read socket
  */
-int send_ais_message(BloomFilter &bf,string payload, int ais_message_type=4, octet *auth_tag_message=NULL){
+int send_ais_message(string *message_sent, string payload, int ais_message_type=4, octet *auth_tag_message=NULL){
     
     printf("\n Sending AIS message: ");
 
-    std::cout<<"\n Message Payload = "<<payload<<endl;
+  //  std::cout<<"\n Message Payload = "<<payload<<endl;
 
     //check size of payload, fit in 3 slots, max size allowed in 3 slots = 66 bytes according to AIS standard
     int message_count=0;
@@ -244,47 +183,11 @@ int send_ais_message(BloomFilter &bf,string payload, int ais_message_type=4, oct
             OCT_jstring(auth_tag_message, (char *)message.data() );
            //  OCT_output(auth_tag_message);
            }
-
-          bf.add((const unsigned char *)message.c_str(), message.length(), false);
-
-          //Tests
-          
-          ofstream outfile;
-          outfile.open("test_1_sec_lvl_"+to_string(SECURITY_LEVEL)+".csv", ios::out | ios::app );
-          outfile << "\n Time taken to add/map element in B.F. in nanoseconds \n";
-          bool write_test=true;
-          for (int i=0; i<505; i++){
-                auto start = std::chrono::high_resolution_clock::now();
-                bf.add((const unsigned char *)message.c_str(), message.length(), write_test);
-                auto elapsed = std::chrono::high_resolution_clock::now() - start;
-                long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-              //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
-                write_test=false;
-
-                      
-                // write inputted data into the file.
-                outfile << nanoseconds << ", ";
-                        
-          }
-          
-          outfile << "\n\n Time taken to check if element in B.F. in nanoseconds \n";
-          for (int i=0; i<505; i++){
-                auto start = std::chrono::high_resolution_clock::now();
-                bf.possiblyContains((const unsigned char *)message.c_str(), message.length());
-                auto elapsed = std::chrono::high_resolution_clock::now() - start;
-                long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-              //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
-                  
-                // write inputted data into the file.
-                outfile << nanoseconds << ", ";
-                      
-          }
-                          // close the opened file.
-                outfile.close();
           
            
         }   
-
+        if(message_sent!=NULL)
+          *message_sent = message;
         int res = send_message_2_sock(message);
         if (res != 0)
         {
@@ -299,26 +202,7 @@ int send_ais_message(BloomFilter &bf,string payload, int ais_message_type=4, oct
 }
 
 
-int AIS_Tesla(int security_level){
-  /*
-  We will have 4 security levels:
-- Level 1: TESLA-only,  TESLA Digest Size: 512 bits, Overhead: 300%. Usage Scenario: off-shore, no congestion.
-- Level 2: TESLA-only,  TESLA Digest Size: 160 bits, Overhead: 200%. Usage Scenario: port, minimum time to authenticate a message.
-- Level 3: TESLA + BF in separate messages. TESLA Digest Size: 512 bits, Overhead: ~110%. Usage Scenario: port, medium-level congestion, vehicles moving.
-- Level 4: TESLA + BF in separate messages. TESLA Digest Size: 512 bits, Overhead: ~80%. Usage Scenario:  port, high-level congestion, vehicles moving  
-- Level 5: TESLA + BF in same message. TESLA Digest Size: 160 bits, Overhead: ~60%. Usage Scenario: port, heavy congestion, vehicles moving.
-  */
-
-   /*
- NEW SECURITY LEVELS
- Each security level will have 1 byte meta data, 16 byte key
-- Level 1: TESLA-only,  TESLA Digest Size: 512 bits, Overhead: 300%. Usage Scenario: off-shore, no congestion.
-- Level 2: TESLA-only,  TESLA Digest Size: 160 bits, Overhead: 200%. Usage Scenario: port, minimum time to authenticate a message.
-- Level 3: TESLA + BF in separate messages. TESLA Digest Size: 512 bits, Overhead: ~110%. Usage Scenario: port, medium-level congestion, vehicles moving.
-- Level 4: TESLA + BF in separate messages. TESLA Digest Size: 512 bits, Overhead: ~80%. Usage Scenario:  port, high-level congestion, vehicles moving  
-- Level 5: TESLA + BF in same message. TESLA Digest Size: 160 bits, Overhead: ~60%. Usage Scenario: port, heavy congestion, vehicles moving.
-  */
-
+int AIS_CAESAR_Tx(int security_level){
 
     int key_size=16;
     int application_meta_size=1;
@@ -330,6 +214,11 @@ int AIS_Tesla(int security_level){
 
     //when 512 digest size concatente to 384 or 392
     switch(security_level){
+      case 0:
+        input_digest_size = SHA512;
+        output_digest_size = 49;
+        number_of_messages = 1;
+        break;
       case 1://Tesla only, 512 digest size
         //generate 512 bits Auth tag using HMAC
         input_digest_size = SHA512;
@@ -338,28 +227,28 @@ int AIS_Tesla(int security_level){
         break;
       case 2:
         //Tesla only, 160 bits digest size
-        input_digest_size = SHA256;
+        input_digest_size = SHA512;
         output_digest_size = 21;
         number_of_messages = 1;
         break;
       case 3:
          //Tesla +BF in same message, 256 digest size
-        input_digest_size = SHA256;
+        input_digest_size = SHA512;
         output_digest_size = 32;
-     //   number_of_messages = 2;
+        number_of_messages = 2;
         sendBF = true;
         break;
       case 4:
         //Tesla +BF in same message, 256 digest size
-        input_digest_size = SHA256;
+        input_digest_size = SHA512;
         output_digest_size = 20;
-       // number_of_messages = 4;
+        number_of_messages = 4;
         sendBF = true;
         break;
       /*
       case 5:
         //Tesla +BF(2 slots) in sep. message, 512 digest size
-        input_digest_size = SHA256;
+        input_digest_size = SHA512;
         output_digest_size = input_digest_size;
         number_of_messages = 9;
         sendBF = true;
@@ -368,24 +257,26 @@ int AIS_Tesla(int security_level){
         //Tesla +BF(2 slots) in sep. message, 160 digest size
         input_digest_size = SHA512;
         output_digest_size = 20;
-        //number_of_messages = 9;
+        number_of_messages = 9;
         sendBF = true;
         break;
       case 6:
         //Tesla +BF(3 slots) in sep. message, 512 digest size
         input_digest_size = SHA512;
         output_digest_size = 49;
-       // number_of_messages = 9;
+        number_of_messages = 9;
         sendBF = true;
         break;
 
       default:
+          printf("ERROR: SECURITY LEVEL NOT SUPPORTED!");
+        return -1;
         break;
     }
 
     //SETTING UP B.F.
     int z = MAX_SLOTS_DATA_SIZE - (output_digest_size+key_size+application_meta_size);
-    std::cout<<"\n Z: "<<z;
+
     if(security_level==5 || security_level==6|| security_level==7){
       z = MAX_SLOTS_DATA_SIZE - application_meta_size;
     }
@@ -415,32 +306,61 @@ int AIS_Tesla(int security_level){
     char auth_tag_message_size[number_of_messages * field_size_EFS + 1];
     octet auth_tag_message = {0, static_cast<int> (sizeof(auth_tag_message_size)), auth_tag_message_size};
 
-        //Creating B.F
-    if(security_level>2){
-
-
-      // what to do here//increment i/n everytime ais message is sent
-      /*
-      for(int i=0; i<9; i++){
-        application_meta_bits = std::bitset<3>(i+11).to_string(); 
-        application_msgs = std::bitset<5>(i+1).to_string(); 
-        payload = hextobin(string(char_payload));
-        payload = application_meta_bits + application_msgs + payload;
-        bloomf.add((const unsigned char *)payload.c_str(), payload.length());
-      }
-      */
-    // cout<<"Contains"<<bloomf.possiblyContains((const unsigned char *)payload.c_str(), payload.length());
-    //  cout<<"Compressed size"<< bloomf.Encode_BloomFilter(10);
-    //  bloomf.Decode_BloomFilter();
-      //cout<<"\nContains"<<bloomf.possiblyContains((const unsigned char *)payload.c_str(), payload.length());
-    }
+    //Value of i should be less than or equal to 'n'
+    int ith_timeslot = 0;
 
     for(int j=0; j<number_of_messages; j++){
-      send_ais_message(bloomf, "",4, &auth_tag_message);
-      printf("\n message: %d", j);
+      string message;
+      send_ais_message(&message, "",4, &auth_tag_message);
+      //printf("\n message: %d", j);
+      //increment ith_timeslot everytime ais message is sent/simulating one ais slot has passed
+      ith_timeslot++;
       //OCT_output(&auth_tag_message);
-      //bloomf.add((const unsigned char *)payload.c_str(), payload.length());
+       if(security_level>2){
+          //std::cout<<"Bloomf msg:"<<message;
+          bloomf.add((const unsigned char *)message.c_str(), message.length());
+
+          //Tests
+          if(WRITE_TESTS){
+              ofstream outfile;
+              outfile.open("test_1_sec_lvl_"+to_string(SECURITY_LEVEL)+".csv", ios::out | ios::app );
+              outfile << "\n Time taken to add/map element in B.F. in nanoseconds \n";
+              bool write_test=true;
+              for (int i=0; i<505; i++){
+                    auto start = std::chrono::high_resolution_clock::now();
+                    bloomf.add((const unsigned char *)message.c_str(), message.length());
+                    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                    long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+                  //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+                    write_test=false;
+
+                          
+                    // write inputted data into the file.
+                    outfile << nanoseconds << ", ";
+                            
+              }
+              
+              outfile << "\n\n Time taken to check if element in B.F. in nanoseconds \n";
+              for (int i=0; i<505; i++){
+                    auto start = std::chrono::high_resolution_clock::now();
+                    bloomf.possiblyContains((const unsigned char *)message.c_str(), message.length());
+                    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                    long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+                  //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+                      
+                    // write inputted data into the file.
+                    outfile << nanoseconds << ", ";
+                          
+              }
+              // close the opened file.
+              outfile.close();
+          }
+          
+      }
+
     }
+
+    cout<<"\n Value of i = "<<ith_timeslot<<endl;
 
     //Starting TESLA protocol
     //Generation of random number for nonce
@@ -448,10 +368,8 @@ int AIS_Tesla(int security_level){
     std::mt19937_64 mt_rand(seed_gen());
     std::uniform_int_distribution<unsigned long long> dis;
     
-    int n =  10 + (rand() % 4500);//mt_rand();
+    int n = 10 + (rand() % 4500);//mt_rand();
     cout<<"\n Value of n = "<<n<<endl;
-    //n=10;
-   
    
     //Generating Master key
     SALT.len = 8;
@@ -463,31 +381,26 @@ int AIS_Tesla(int security_level){
     OCT_jstring(&PW, pp);  // set Password from string
     
     //Generate Master key Km, of size EGS_ED25519 bytes derived from Password and Salt
-    PBKDF2(MC_SHA2, HASH_TYPE_ED25519, &Km, field_size_EGS, &PW, &SALT, 1000);
+    //PBKDF2(MC_SHA2, HASH_TYPE_ED25519, &Km, field_size_EGS, &PW, &SALT, 1000);
 
-    printf("\n Km:\n");
-    OCT_output(&Km);
+  //  printf("\n Km:\n");
+  //  OCT_output(&Km);
     
     //generate K0
-    generateKeyChainCommit(&Km, &K0, n, key_size);
+    //generateKeyChainCommit(&Km, &K0, n, key_size);
 
-    
 
     //Using pre-generated values
-  //  OCT_fromHex(&Km, (char *) "f468065c522a3edcb7d17a063c8baa497d5222ef20aac565d25fa9e79ee6f0f6" );
-  //  OCT_fromHex(&K0, (char *) "e3b0c44298fc1c149afbf4c8996fb924" );
+    OCT_fromHex(&Km, (char *) "f468065c522a3edcb7d17a063c8baa497d5222ef20aac565d25fa9e79ee6f0f6" );
+    OCT_fromHex(&K0, (char *) "3befe8479939cbb8772d4fd0985a2502" );
     printf("\n K0:\n");
     OCT_output(&K0);
 
     //Messages sent
     //OnlinePhase
-    //i = timeslot
-    //Value of i should be less than or equal to 'n'
-    int i = 1;//(std::uniform_int_distribution<int>(1,n), mt_rand()); 
-    //i =  1 + (rand() % n);
-    cout<<"\n Value of i = "<<i<<endl;
+
     //generate Ki
-    generateKeyChainCommit(&Km, &Ki, n-i, key_size);
+    generateKeyChainCommit(&Km, &Ki, n-ith_timeslot, key_size);
 
     printf("\n Ki:\n");
     OCT_output(&Ki);
@@ -509,47 +422,50 @@ int AIS_Tesla(int security_level){
     printf("\n outputMAC:\n ");
     OCT_output(&outputMAC);
 
-    
-    if(security_level == 1 || security_level == 2 ){
 
-      string security_level_bits = std::bitset<3>(security_level).to_string(); 
-      string app_meta_bits = std::bitset<5>(0).to_string(); 
+    string security_level_bits = std::bitset<3>(security_level).to_string(); 
+    string app_meta_bits = std::bitset<5>(0).to_string(); 
+    if(security_level == 0 ){
+
+      string payload = security_level_bits + app_meta_bits;
+      res = send_ais_message(NULL, payload, 8, NULL);
+    
+    }
+    if(security_level == 1 || security_level == 2 ){
+      //Only TESLA
       string MAC = hextobin(string(char_payload));
       string Ki_key = hextobin(string(char_key));
       string payload = security_level_bits + app_meta_bits + Ki_key + MAC;
-      
-      res = send_ais_message(bloomf, payload, 8, NULL);
+      res = send_ais_message(NULL, payload, 8, NULL);
+
     }
     else if(security_level == 3 || security_level == 4 ){
-      //same message
-      string security_level_bits = std::bitset<3>(security_level).to_string(); 
-      string app_meta_bits = std::bitset<5>(0).to_string(); 
+      //BF and TESLA in same message
       string MAC = hextobin(string(char_payload));
       string Ki_key = hextobin(string(char_key));
       string bf = bloomf.get_string();
       std::cout<<"\n bf: \n"<<bf;
 
       string payload = security_level_bits + app_meta_bits + Ki_key + MAC + bf;
-      send_ais_message(bloomf, payload, 8, NULL);
+      send_ais_message(NULL, payload, 8, NULL);
 
     }
     else if(security_level == 5 || security_level == 6  || security_level == 7 ){
       //separate message for TESLA and B.F
-      string security_level_bits = std::bitset<3>(security_level).to_string(); 
-      string app_meta_bits = std::bitset<5>(0).to_string(); 
+      //First send TESLA
       string MAC = hextobin(string(char_payload));
       string Ki_key = hextobin(string(char_key));
       
       string payload = security_level_bits + app_meta_bits + Ki_key + MAC;
       //std:cout<<"\n length: "<<payload.length();
-      send_ais_message(bloomf, payload, 8, NULL);
+      send_ais_message(NULL, payload, 8, NULL);
 
+      //Then send B.F.
       string bf = bloomf.get_string();
-      std:cout<<"\n length: "<<bf;
       app_meta_bits = std::bitset<5>(1).to_string(); 
       payload = security_level_bits + app_meta_bits + bf;
       
-      send_ais_message(bloomf, payload, 8, NULL);
+      send_ais_message(NULL, payload, 8, NULL);
 
     }
     else
@@ -558,19 +474,26 @@ int AIS_Tesla(int security_level){
     }
 
     //Key verification
-    generateKeyChainCommit(&Ki, &Ki1, i, key_size);
+    generateKeyChainCommit(&Ki, &Ki1, ith_timeslot, key_size);
 
     printf("\n Ki1( Hi(Ki) ):\n");
     OCT_output(&Ki1);
+
+    if (!OCT_comp(&K0, &Ki1))
+    {
+        printf("*** Key verification Failed\n");
+        return -1;
+    }
+
+
 
   return 0;
 }
 
 int main()
 {
-    int i,fd1;
 
-    printf("\nStarting SecureAIS protocol \n");
+    printf("\nStarting AIS_CAESAR protocol \n");
 
     /*
     do {
@@ -579,25 +502,28 @@ int main()
     }while(fd1 == -1);
     printf("Connected to receive socket!\n");
     */
+
     int security_level = SECURITY_LEVEL;
-          ofstream outfile;
-          outfile.open("test_1_sec_lvl_"+to_string(security_level)+".csv", ios::out | ios::app );
+    if(WRITE_TESTS){
+      ofstream outfile;
+      outfile.open("test_1_sec_lvl_"+to_string(security_level)+".csv", ios::out | ios::app );
 
-          outfile << "Security level = " << security_level<< "\n";
-                  
-          // close the opened file.
-          outfile.close();
+      outfile << "Security level = " << security_level<< "\n";
+              
+      // close the opened file.
+      outfile.close();
+    }
 
-        auto start = std::chrono::high_resolution_clock::now();
-        double vm, rss;
-        process_mem_usage(vm, rss);
-        std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
-        AIS_Tesla(security_level);
-        process_mem_usage(vm, rss);
-        std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
-        auto elapsed = std::chrono::high_resolution_clock::now() - start;
-        long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-        printf("\nTime taken to transmit: %lld microseconds\n\n",  microseconds);
+    auto start = std::chrono::high_resolution_clock::now();
+    double vm, rss;
+    process_mem_usage(vm, rss);
+    std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
+    AIS_CAESAR_Tx(security_level);
+    process_mem_usage(vm, rss);
+    std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
+    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
+    printf("\nTime taken to transmit: %lld microseconds\n\n",  microseconds);
 
 }
 

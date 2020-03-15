@@ -388,12 +388,10 @@ void protodec_8(demod_state_t *d, int bufferlen, unsigned long mmsi)
     for (int i = 0; i < bufferlen; i++){
         d->message += (char)d->rbuffer[i]+48;
     }
-
+    //CAESAR Message format = security_lvl + appmeta_bits + payload, get payload here 
     strcpy(d->payload_buffer, d->message.substr(64, std::string::npos).c_str()); 
 
-   // std::cout<<"\n Message"<<  d->message ;
-
-    printf(" appid %d app_dac %d app_fi %d app_meta_bits %d \n", appid, appid_dac, appid_fi, appmeta_bits);
+    //  printf(" appid %d app_dac %d app_fi %d app_meta_bits %d \n", appid, appid_dac, appid_fi, appmeta_bits);
 }
 
 void protodec_18(demod_state_t *d, int bufferlen, unsigned long mmsi)

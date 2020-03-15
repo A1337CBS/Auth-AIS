@@ -1,52 +1,17 @@
-//
-//g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp FastAC_fix-nh/FastAC/arithmetic_codec.cpp -o recvr
+/* 
+  receiver.cpp 
+  @authors Ahmed Aziz, Pietro Tedeschi, Savio Sciancalepore, Roberto Di Pietro
+  @Description: Receiver program for implementing AIS_CAESAR Protocol PoC
+  @version 1.0 25/02/19
+**/
 //g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp -o recvr
-#include "stdafx.h"
-
+#include "main.h"
 
 using namespace B256_56;
 using namespace ED25519;
 #define field_size_EFS EFS_ED25519
 #define field_size_EGS EGS_ED25519
 #define MAX_SLOTS_DATA_SIZE 66 
-
-
-void process_mem_usage(double& vm_usage, double& resident_set)
-{
-   using std::ios_base;
-   using std::ifstream;
-   using std::string;
-
-   vm_usage     = 0.0;
-   resident_set = 0.0;
-
-   // 'file' stat seems to give the most reliable results
-   //
-   ifstream stat_stream("/proc/self/stat",ios_base::in);
-
-   // dummy vars for leading entries in stat that we don't care about
-   //
-   string pid, comm, state, ppid, pgrp, session, tty_nr;
-   string tpgid, flags, minflt, cminflt, majflt, cmajflt;
-   string utime, stime, cutime, cstime, priority, nice;
-   string O, itrealvalue, starttime;
-
-   // the two fields we want
-   //
-   unsigned long vsize;
-   long rss;
-
-   stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
-               >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
-               >> utime >> stime >> cutime >> cstime >> priority >> nice
-               >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
-
-   stat_stream.close();
-
-   long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
-   vm_usage     = vsize / 1024.0;
-   resident_set = rss * page_size_kb;
-}
 
 
 /**	
@@ -74,39 +39,21 @@ std::string bintohex(const std::string &s){
     return out;
 }
 
-//K = input Key, K0=output key, n=number of times to hash
-int generateKeyChainCommit(octet *K, octet *K0, int n, int key_size){ //octet *output
-
-  //create a temp octet
-  char tempOctet_K_size[2 * 16 + 1];
-  octet tempOctet = {0, sizeof(tempOctet_K_size), tempOctet_K_size};
-  //copy K into K0
-  OCT_copy(K0, K);
-
-  //Use hash function
-  for (int i=0; i<n; i++){
-    OCT_clear(K0);
-    SPhash(MC_SHA2, SHA256, &tempOctet, K0);
-    //copy temp octet into K0
-    tempOctet.len = key_size;
-    OCT_copy(K0, &tempOctet);
-  }
-
-  return 0;
-}
-
 int main(void)
 {
     AISConfiguration ais_config;
-    std::vector<std::string> ais_messages_4;
-    //Store K0 of transmitter
-    //OCT_fromHex(&K0, (char *) "e3b0c44298fc1c149afbf4c8996fb924" ); 
+
+    //Store K0 of transmitter, should be same as in main.cpp
+    char s0[2 * field_size_EGS];
+    octet K0 = {0, sizeof(s0), s0};
+    OCT_fromHex(&K0, (char *) "3befe8479939cbb8772d4fd0985a2502" ); 
+    int ith_timeslot=0;//ith timeslot for TESLA 
 
     bool repeated_message = false;
     
     std::vector<ais_message_t> ais_vector;
     int fd1, message_count, last_count;
-    int i=0;//ith timeslot for TESLA
+    
     message_count = 0;
     do {
         sleep(1);
@@ -114,23 +61,23 @@ int main(void)
     }while(fd1 == -1);
     printf("CAESAR Receiver Connected!\n");
     load_configuration(NULL, &ais_config);
-   // printf("Total messages to be computed: %d\n");
-   // for(message_count = 0; message_count < ais_config.total_messages; message_count++) {
 
     while(true){
 
         double vm, rss;
         process_mem_usage(vm, rss);
         std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
-
+        std::cout << "ith_timeslot: " << ith_timeslot << std::endl;
         ais_message_t ais[1];
         ais[message_count].fd = fd1;
         ais[message_count].d.seqnr = 0;
-        read_ais_message(&ais[message_count]);
-        printf("!%s\r\n", ais[message_count].d.nmea);
-        printf("Type: %d\r\n", ais[message_count].d.type);
-        printf("security_level: %d\r\n", ais[message_count].d.security_level);
         bool nextBloomf=false;
+        
+        read_ais_message(&ais[message_count]);
+
+        if(ais[message_count].d.type == 8){
+            printf("security_level: %d\r\n", ais[message_count].d.security_level);
+        }
        
         if(ais[message_count].d.type == 8 ){
            
@@ -139,7 +86,7 @@ int main(void)
 
            // std::cout<<"\n Temp: \n"<<ais[message_count].d.message;
 
-           //CAESAR
+            //CAESAR config
             int security_level=ais[message_count].d.security_level;
             int application_meta_size=1;
             int key_size=16;
@@ -159,20 +106,20 @@ int main(void)
                     break;
                 case 2:
                     //Tesla only, 160 bits digest size
-                    input_digest_size = SHA256;
+                    input_digest_size = SHA512;
                     output_digest_size = 21;
                     number_of_messages = 1;
                     break;
                 case 3:
                     //Tesla +BF in same message, 256 digest size
-                    input_digest_size = SHA256;
+                    input_digest_size = SHA512;
                     output_digest_size = 32;
                     number_of_messages = 2;
                     sendBF = true;
                     break;
                 case 4:
                     //Tesla +BF in same message, 256 digest size
-                    input_digest_size = SHA256;
+                    input_digest_size = SHA512;
                     output_digest_size = 20;
                     number_of_messages = 4;
                     sendBF = true;
@@ -180,7 +127,7 @@ int main(void)
                 /*
                 case 5:
                     //Tesla +BF(2 slots) in sep. message, 512 digest size
-                    input_digest_size = SHA256;
+                    input_digest_size = SHA512;
                     output_digest_size = input_digest_size;
                     number_of_messages = 9;
                     sendBF = true;
@@ -207,12 +154,10 @@ int main(void)
             //Complete Auth tag will be stored
             char auth_tag_message_size[number_of_messages * field_size_EFS + 1];
             octet auth_tag_message = {0, static_cast<int> (sizeof(auth_tag_message_size)), auth_tag_message_size};
-
-
         
-            char s0[2 * field_size_EGS], s1[2 * field_size_EGS], z0[output_digest_size*2], z1[output_digest_size*2];
-            octet K0_recvd = {0, sizeof(s0), s0};
-            octet Ki = {0, sizeof(s1), s1};
+            char s1[2 * field_size_EGS], s2[2 * field_size_EGS], z0[output_digest_size*2], z1[output_digest_size*2];
+            octet K0_recvd = {0, sizeof(s1), s1};
+            octet Ki = {0, sizeof(s2), s2};
 
             octet outputMAC = {0, static_cast<int> (sizeof(z0)), z0};
             octet outputMAC_recvd = {0, static_cast<int> (sizeof(z1)), z1};
@@ -238,7 +183,6 @@ int main(void)
                 //  printf("\n OCT output");
                     OCT_jstring(&auth_tag_message, (char *) message.data() );
                 //  OCT_output(&auth_tag_message);
-                    i++;
             }
             
         /*
@@ -249,14 +193,14 @@ int main(void)
         }*/
 
         if(security_level == 1 || security_level == 2 ){
+            //Extract key from message
             OCT_fromHex(&Ki, (char *) temp.substr(0, key_size*2).data()); 
             printf("\n Ki:\n ");
             OCT_output(&Ki);
 
             //Key verification
-            generateKeyChainCommit(&Ki, &K0_recvd, i, key_size);
-            //Truncate keysize to 16 bytes
-        //  K0_recvd.len=key_size;
+            generateKeyChainCommit(&Ki, &K0_recvd, ith_timeslot, key_size);
+
             printf("\n Ki(Hi(Ki)) == K0? :\n");
             OCT_output(&K0_recvd);
 
@@ -268,7 +212,13 @@ int main(void)
             HMAC(MC_SHA2, input_digest_size, &outputMAC, output_digest_size, &Ki, &auth_tag_message);
             printf("\n outputMAC:\n ");
             OCT_output(&outputMAC);
-
+            
+            
+            if (!OCT_comp(&K0_recvd, &K0))
+            {
+                printf("*** Key exchanged Failed\n");
+                return -1;
+            }
             
             if (!OCT_comp(&outputMAC, &outputMAC_recvd))
             {
@@ -281,7 +231,7 @@ int main(void)
                     OCT_output(&Ki);
 
                     //Key verification
-                    generateKeyChainCommit(&Ki, &K0_recvd, i, key_size);
+                    generateKeyChainCommit(&Ki, &K0_recvd, ith_timeslot, key_size);
                     //Truncate keysize to 16 bytes
                 //  K0_recvd.len=key_size;
                     printf("\n Ki(Hi(Ki)) == K0? :\n");
@@ -337,7 +287,7 @@ int main(void)
                 OCT_output(&Ki);
 
                 //Key verification
-                generateKeyChainCommit(&Ki, &K0_recvd, i, key_size);
+                generateKeyChainCommit(&Ki, &K0_recvd, ith_timeslot, key_size);
                 //Truncate keysize to 16 bytes
             //  K0_recvd.len=key_size;
                 printf("\n Ki(Hi(Ki)) == K0? :\n");
@@ -394,6 +344,7 @@ int main(void)
             
         
         }else if(ais[message_count].d.type == 4 ){
+            
            //go back till last message==8 and source MMSI is equal
           //  std::cout<<"\n Temp: \n"<<ais[message_count].d.message;
 
@@ -402,6 +353,9 @@ int main(void)
         }
         //Add element to vector
         ais_vector.push_back(ais[message_count]);
+        
+        //increment ith_timeslot everytime ais message is received/simulating one ais slot has passed
+        ith_timeslot++;
 
 
         // make sure everything makes it to the output

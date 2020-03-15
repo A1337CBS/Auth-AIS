@@ -1,8 +1,4 @@
 #include "BloomFilter.h"
-#include <iostream>
-#include <fstream>
-#include "smhasher-master/src/MurmurHash3.h"
-#define SECURITY_LEVEL 6
 
 BloomFilter::BloomFilter(uint64_t size, uint8_t numHashes)
       : m_bits(size),
@@ -25,17 +21,12 @@ inline uint64_t nthHash(uint8_t n,
     return (hashA + n * hashB) % filterSize;
 }
 
-void BloomFilter::add(const uint8_t *data, std::size_t len, bool write_test=false) {
+void BloomFilter::add(const uint8_t *data, std::size_t len) {
   
- // auto start = std::chrono::high_resolution_clock::now();
   auto hashValues = hash(data, len);
- // auto elapsed = std::chrono::high_resolution_clock::now() - start;
- // long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
- // printf("\n Time taken to hash element for B.F. : %lld nanoseconds\n\n",  nanoseconds);
   
   //tests
-  
-  if(write_test){
+   if(WRITE_TESTS){
     std::ofstream outfile;
     outfile.open("test_1_sec_lvl_"+std::to_string(SECURITY_LEVEL)+".csv", std::ios::out | std::ios::app );
     outfile << "\n Time taken to hash element for B.F. in nanoseconds \n";
@@ -74,13 +65,32 @@ bool BloomFilter::possiblyContains(const uint8_t *data, std::size_t len) const {
 }
 
 
-// - - Inclusion - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+std::string BloomFilter::get_string() {
+    std::string ret = "";
+    for ( bool bit : m_bits ) {
+        unsigned int vOut = bit?1:0;
+        ret += std::to_string(vOut);
+    }
+    return ret;
+}
 
-#include <stdlib.h>
+void BloomFilter::to_bits(std::string input) {
 
-#include "FastAC_fix-nh/FastAC/arithmetic_codec.h"
+  std::string temp = input;
 
+  if (temp.length()> m_bits.size()){
+    printf("Error: input length greater than B.F. size");
+    return;
+  }
+	for (int i = 0; i < temp.length(); i++) {
+        bool vOut = (temp[i]=='1')?true:false;
+        m_bits[i] = vOut;
+	}
+  return;  
+}
 
+//ARITHMETIC COMPRESSION FUNCTIONS (FUTURE WORK, ADD COMPRESSION)
+/*
 // - - Constants - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 const unsigned BufferSize = 65536;
@@ -110,7 +120,6 @@ int BloomFilter::Encode_BloomFilter(int buffer_size=50)
 
   encoder.start_encoder();
 
- 
 
   for (unsigned p = 0; p < m_bits.size(); p++) {                       // compress data
     unsigned int vOut = m_bits[p]?1:0;
@@ -121,46 +130,10 @@ int BloomFilter::Encode_BloomFilter(int buffer_size=50)
     //encoder.write_to_file(code_file);  // stop encoder & write compressed data
    return encoder.stop_encoder();
 
-                                                          // done: close files
-/*
-  unsigned data_bytes = ftell(data_file), code_bytes = ftell(code_file);
-  printf(" Compressed file size = %d bytes (%6.2f:1 compression)\n",
-    code_bytes, double(data_bytes) / double(code_bytes));
 
-
-  delete [] data;*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-std::string ToBits(unsigned char byte)
-{
-    return std::bitset<8>(byte).to_string();
-}
-
-std::string BloomFilter::get_string() {
-    std::string ret = "";
-    for ( bool bit : m_bits ) {
-        unsigned int vOut = bit?1:0;
-        ret += std::to_string(vOut);
-    }
-    return ret;
-}
-
-void BloomFilter::to_bits(std::string input) {
-
-  std::string temp = input;
-
-  if (temp.length()> m_bits.size()){
-    printf("Error: input length greater than B.F. size");
-    return;
-  }
-	for (int i = 0; i < temp.length(); i++) {
-        bool vOut = (temp[i]=='1')?true:false;
-        m_bits[i] = vOut;
-	}
-  return;  
-}
 
 void BloomFilter::Decode_BloomFilter()
 {
@@ -175,7 +148,6 @@ void BloomFilter::Decode_BloomFilter()
  // for(int i=0; i<10; i++)
  //   printf("\n data %d", static_cast<int>(m_compressedData[i]));
 
-
   // decompress data
     decoder.start_decoder();
     for (unsigned p = 0; p < m_bits.size(); p++) {
@@ -188,5 +160,5 @@ void BloomFilter::Decode_BloomFilter()
     decoder.stop_decoder();
 
 }
-
+*/
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
