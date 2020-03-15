@@ -7,11 +7,9 @@
 //g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp -o recvr
 #include "main.h"
 
-using namespace B256_56;
-using namespace ED25519;
-#define field_size_EFS EFS_ED25519
-#define field_size_EGS EGS_ED25519
-#define MAX_SLOTS_DATA_SIZE 66 
+#ifndef PORT_RECEIVE
+#define PORT_RECEIVE 51999
+#endif
 
 
 /**	
@@ -57,7 +55,7 @@ int main(void)
     message_count = 0;
     do {
         sleep(1);
-        fd1 = socket_init(51999);
+        fd1 = socket_init(PORT_RECEIVE);
     }while(fd1 == -1);
     printf("CAESAR Receiver Connected!\n");
     printf("Transmitter Key K0:\n");

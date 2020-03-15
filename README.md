@@ -35,6 +35,11 @@ To compile from source for receiver.cpp:
 ```
     g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp -o recvr
 ```
+## Security Level and other Flags
+In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL=<b>t</b></i> that ranges from 1 to 6.
+
+Other flags include: <br />
+    -DPORT_SEND or -DPORT_RECEIVE to set another port for send/receive sockets <br />
 
 # Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
