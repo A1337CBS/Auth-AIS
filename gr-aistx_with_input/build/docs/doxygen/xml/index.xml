@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.13">
+  <compound refid="classgr_1_1aistx_1_1Build__Frame__From__Input" kind="class"><name>gr::aistx::Build_Frame_From_Input</name>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ac2c0aa1e2ac38ebdb2c16981b11e941a" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ae8248682e3a660f0bd60f9a7035369e2" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl" kind="class"><name>gr::aistx::Build_Frame_From_Input_impl</name>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a8465f87ae0a4994d3f6ca93f7dfa3ffa" kind="variable"><name>d_repeat</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1ae0245720ad5246613f285b56ff97ceca" kind="variable"><name>d_enable_NRZI</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1ae0c2cb4def6cd84bb2ef29fa00fec9af" kind="variable"><name>d_enable_input</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a3a1e2134c69b6aead573d11e8572aa6b" kind="variable"><name>d_sentence</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1adb1c1582bd09d273840f565c80255e3f" kind="variable"><name>payload</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a568af289fe2720c4cf569b7d46509d7d" kind="variable"><name>LEN_SENTENCE</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a6df3da1c448beaa46d12c9b64aefcc28" kind="variable"><name>LEN_PAYLOAD</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1af486982138e5b692d9fbc21a13b61dc7" kind="function"><name>Build_Frame_From_Input_impl</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a7a9e32ea638b87b79e19a7a16c8c49a9" kind="function"><name>~Build_Frame_From_Input_impl</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1abf73e1769d0b890cab9f476a1e91c1d4" kind="function"><name>dump_buffer</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aa6fc6a2f3bb4429ea30bd670dc6ead1f" kind="function"><name>int2bin</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a331e98b9f3b0cf5752fc62537feda766" kind="function"><name>stuff</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aebe9334bfe2fd66c9327f9cee31eac2c" kind="function"><name>pack</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a5fa1004e6565d3e0a57120d5e4113bd6" kind="function"><name>nrz_to_nrzi</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aa0523f0f308cc03eb8585f24f59ab80e" kind="function"><name>reverse_bit_order</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a0fe0da0f9d4fd35133142b2f5ac0f0c1" kind="function"><name>unpack</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1abfd6d8431eaae5cef4741b3100be521b" kind="function"><name>compute_crc</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a1517ba7d88b6d5d0ebf0246673aea962" kind="function"><name>byte_packing</name></member>
+    <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a9b43ebb30c9ff51a4632051d5aaf0a16" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="namespacegr" kind="namespace"><name>gr</name>
+  </compound>
+  <compound refid="namespacegr_1_1aistx" kind="namespace"><name>gr::aistx</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="api_8h" kind="file"><name>api.h</name>
+    <member refid="api_8h_1a673964c4e0fbad19577510275e025742" kind="define"><name>AISTX_API</name></member>
+  </compound>
+  <compound refid="Build__Frame__From__Input_8h" kind="file"><name>Build_Frame_From_Input.h</name>
+  </compound>
+  <compound refid="Build__Frame__From__Input__impl_8h" kind="file"><name>Build_Frame_From_Input_impl.h</name>
+  </compound>
+  <compound refid="group__defs_8dox" kind="file"><name>group_defs.dox</name>
+  </compound>
+  <compound refid="main__page_8dox" kind="file"><name>main_page.dox</name>
+  </compound>
+  <compound refid="group__block" kind="group"><name>block</name>
+  </compound>
+  <compound refid="dir_0394f96c439d47acaf61ef0360aaa540" kind="dir"><name>aistx</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_97aefd0d527b934f1d99a682da8fe6a9" kind="dir"><name>lib</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

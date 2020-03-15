@@ -9,7 +9,9 @@
 #include <iostream>
 #include <fstream>
 #include "smhasher-master/src/MurmurHash3.h"
-#define SECURITY_LEVEL 6
+#ifndef SECURITY_LEVEL
+  #define SECURITY_LEVEL 1
+#endif
 #define WRITE_TESTS false
 
 struct BloomFilter {

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<block>
+  <name>AIS Frame Builder</name>
+  <key>aistx_Build_Frame_From_Input</key>
+  <category>[aistx]</category>
+  <import>import aistx</import>
+  <make>aistx.Build_Frame_From_Input($*sentence, $repeat, $enable_NRZI, $enable_input, $len_tag_key)</make>
+     <param>
+		<name>Sentence</name>
+		<key>sentence</key>
+		<value>010010000011101011110111001110011000100000000000000000100000001011001000001011000101000110100010010100001101011001111011000011111111111011100101110011100000000000000110</value>
+		<type>string</type>
+   </param>
+   <param>
+	<name>Repeat</name>
+	<key>repeat</key>
+	<value>True</value>
+	<type>enum</type>
+	<option>
+		<name>Yes</name>
+		<key>True</key>
+	</option>
+	<option>
+		<name>No</name>
+		<key>False</key>
+	</option>
+  </param>
+   <param>
+	<name>Enable_NRZI_Conversion</name>
+	<key>enable_NRZI</key>
+	<value>True</value>
+	<type>enum</type>
+	<option>
+		<name>Yes</name>
+		<key>True</key>
+	</option>
+	<option>
+		<name>No</name>
+		<key>False</key>
+	</option>
+  </param>  
+     <param>
+	<name>Enable_input</name>
+	<key>enable_input</key>
+	<value>True</value>
+	<type>enum</type>
+	<option>
+		<name>Yes</name>
+		<key>True</key>
+	</option>
+	<option>
+		<name>No</name>
+		<key>False</key>
+	</option>
+  </param>  
+
+  	<param>
+		<name>Length Tag Key</name>
+		<key>len_tag_key</key>
+		<value>packet_len</value>
+		<type>string</type>
+	</param>
+
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+	<optional>1</optional>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+</block>

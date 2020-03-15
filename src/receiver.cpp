@@ -60,13 +60,16 @@ int main(void)
         fd1 = socket_init(51999);
     }while(fd1 == -1);
     printf("CAESAR Receiver Connected!\n");
+    printf("Transmitter Key K0:\n");
+    OCT_output(&K0);
+
     load_configuration(NULL, &ais_config);
 
     while(true){
 
         double vm, rss;
         process_mem_usage(vm, rss);
-        std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
+        std::cout << "\n VM: " << vm << "; RSS: " << rss << std::endl;
         std::cout << "ith_timeslot: " << ith_timeslot << std::endl;
         ais_message_t ais[1];
         ais[message_count].fd = fd1;
@@ -82,9 +85,7 @@ int main(void)
         if(ais[message_count].d.type == 8 ){
            
             std::string temp = bintohex(std::string(ais[message_count].d.payload_buffer));
-            std::cout<<"\n Temp: \n"<<temp;
-
-           // std::cout<<"\n Temp: \n"<<ais[message_count].d.message;
+           // std::cout<<"\n Temp: \n"<<temp;
 
             //CAESAR config
             int security_level=ais[message_count].d.security_level;
@@ -164,9 +165,7 @@ int main(void)
 
 
             for(int j = ais_vector.size()-1; j >= 0; j--) {
-                   
-                    // make sure everything makes it to the output
-                     fflush(stdout);   
+                    //go back till last message==8 or source MMSI is equal 
                     if ( ais_vector[j].d.type == 8 && ais_vector[j].d.appmeta_bits==1 && ais_vector[j].d.security_level >= 5 ){
                         break;
                     }
@@ -176,7 +175,8 @@ int main(void)
                     else if ( security_level <5 && ais_vector[j].d.type == 8  ){
                         break;
                     }
-                     std::cout<<"\n message: "<<j<< " \n"<<ais_vector[j].d.type;
+                    
+                    //std::cout<<"\n message: "<<j<< " \n"<<ais_vector[j].d.type;
                     std::string message = ais_vector[j].d.message;
 
                 //  std::cout<<"\n message: "<<j<< " \n"<<message.data();
@@ -218,22 +218,27 @@ int main(void)
             {
                 printf("*** Key exchanged Failed\n");
                 return -1;
+            }else{
+                printf("*** Key K0 exchanged matches! \n");
             }
             
             if (!OCT_comp(&outputMAC, &outputMAC_recvd))
             {
-                printf("*** Auth tag exchanged Failed\n");
+                printf("*** MAC tag exchanged Failed\n");
                 return -1;
+            }else{
+                printf("*** MAC tag matches! \n");
             }
-            } else if(security_level == 3 || security_level == 4 ){
+            ith_timeslot = 0;
+
+        } else if(security_level == 3 || security_level == 4 ){
                     OCT_fromHex(&Ki, (char *) temp.substr(0, key_size*2).data()); 
                     printf("\n Ki:\n ");
                     OCT_output(&Ki);
 
                     //Key verification
                     generateKeyChainCommit(&Ki, &K0_recvd, ith_timeslot, key_size);
-                    //Truncate keysize to 16 bytes
-                //  K0_recvd.len=key_size;
+
                     printf("\n Ki(Hi(Ki)) == K0? :\n");
                     OCT_output(&K0_recvd);
 
@@ -254,27 +259,36 @@ int main(void)
                  //   std::cout<<"\n bf: \n"<<bf;
                     bloomf.to_bits(bf);
 
-                    for(int j = ais_vector.size(); j > 0; j--) {
+                    for(int j = ais_vector.size(), k = ith_timeslot; j > 0,k>0; j--, k--) {
                         if ( ais_vector[j-1].d.type == 8)
                             break;
                         std::string message = ais_vector[j-1].d.message;
-                        std::cout<<"\nContains "<< (bloomf.possiblyContains((const unsigned char *)message.c_str(), message.length()));
+                        string contains = (bloomf.possiblyContains((const unsigned char *)message.c_str(), message.length())?"true":"false");
+                        std::cout<<"\n Contains ais message 4 received#"<< k <<"\t"<<contains;
                     }
 
+                    if (!OCT_comp(&K0_recvd, &K0))
+                    {
+                        printf("\n*** Key exchanged Failed\n");
+                        return -1;
+                    }else{
+                        printf("\n*** Key K0 exchanged matches! \n");
+                    }
+                    
                     if (!OCT_comp(&outputMAC, &outputMAC_recvd))
                     {
-                        printf("*** Auth tag exchanged Failed\n");
+                        printf("*** MAC tag exchanged Failed\n");
                         return -1;
+                    }else{
+                        printf("*** MAC tag matches! \n");
                     }
+                    ith_timeslot = 0;
 
             }
             else if((security_level == 5 || security_level == 6  || security_level == 7) && ais[message_count].d.appmeta_bits==0){
-                //if(nextBloomf==false){
+
                     nextBloomf = true;
-                 //   continue;
-               // }
-              //  std::cout<<"\nContains if ";
-             //   continue;
+
             }
             else if((security_level == 5 || security_level == 6  || security_level == 7) && ais[message_count].d.appmeta_bits==1 ){
                 
@@ -288,8 +302,7 @@ int main(void)
 
                 //Key verification
                 generateKeyChainCommit(&Ki, &K0_recvd, ith_timeslot, key_size);
-                //Truncate keysize to 16 bytes
-            //  K0_recvd.len=key_size;
+
                 printf("\n Ki(Hi(Ki)) == K0? :\n");
                 OCT_output(&K0_recvd);
 
@@ -311,7 +324,7 @@ int main(void)
                    
                 bloomf.to_bits(bf);
 
-                for(int j = ais_vector.size()-1; j >= 0; j--) {
+                for(int j = ais_vector.size()-1, k = ith_timeslot; j >= 0,k>0; j--, k--) {
                     if ( ais_vector[j].d.type == 8 && ais_vector[j].d.appmeta_bits==1 && ais_vector[j].d.security_level >= 5 ){
                         break;
                     }
@@ -323,19 +336,31 @@ int main(void)
                     }
                     std::string message = ais_vector[j].d.message;
 
-                    auto start = std::chrono::high_resolution_clock::now();
-                    std::cout<<"\nContains "<< (bloomf.possiblyContains((const unsigned char *)message.c_str(), message.length()));
-                    auto elapsed = std::chrono::high_resolution_clock::now() - start;
-                    long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-                    printf("\nTime taken to check if element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+                    //auto start = std::chrono::high_resolution_clock::now();
+                    string contains = (bloomf.possiblyContains((const unsigned char *)message.c_str(), message.length())?"true":"false");
+                    std::cout<<"\n Contains ais message 4 received#"<< k <<"\t"<<contains;
+                    //auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                    //long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+                    //printf("\nTime taken to check if element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
                     
                 }
 
+                if (!OCT_comp(&K0_recvd, &K0))
+                {
+                    printf("\n*** Key exchanged Failed\n");
+                    return -1;
+                }else{
+                    printf("\n*** Key K0 exchanged matches! \n");
+                }
+                
                 if (!OCT_comp(&outputMAC, &outputMAC_recvd))
                 {
-                    printf("*** Auth tag exchanged Failed\n");
+                    printf("*** MAC tag exchanged Failed\n");
                     return -1;
+                }else{
+                    printf("*** MAC tag matches! \n");
                 }
+                ith_timeslot = 0;
                 
                 nextBloomf = false;
             }else{
@@ -344,18 +369,13 @@ int main(void)
             
         
         }else if(ais[message_count].d.type == 4 ){
-            
-           //go back till last message==8 and source MMSI is equal
-          //  std::cout<<"\n Temp: \n"<<ais[message_count].d.message;
-
-          //  ais_vector.push_back(ais[message_count]);
+    
+            //increment ith_timeslot everytime ais message is received/simulating one ais slot has passed
+            ith_timeslot++;
         
         }
         //Add element to vector
         ais_vector.push_back(ais[message_count]);
-        
-        //increment ith_timeslot everytime ais message is received/simulating one ais slot has passed
-        ith_timeslot++;
 
 
         // make sure everything makes it to the output

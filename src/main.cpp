@@ -1,14 +1,14 @@
 /* 
   main.cpp 
-  @authors Ahmed Aziz
+  @authors Ahmed Aziz, Pietro Tedeschi, Savio Sciancalepore, Roberto Di Pietro
   @Description: Transmitter program for implementing the AIS_CAESAR Protocol PoC
   @version 1.0 25/02/19
 
   Compile command, add flag -DSECURITY_LEVEL to set another security level, example -DSECURITY_LEVEL=1 
-  g++ -O2 main.cpp BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp core-master/cpp/core.a ./ais_receiver/*.c -o main
+  g++ -O2 -DSECURITY_LEVEL=1 main.cpp BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp core-master/cpp/core.a ./ais_receiver/*.c -o main
 **/
 /*Todo
-fix message 4 encoding
+  Compression support
 */
 
 #include "main.h"
@@ -208,9 +208,8 @@ int AIS_CAESAR_Tx(int security_level){
     int application_meta_size=1;
     //input_digest_size, can only be 32, 48 or 64
     int input_digest_size, output_digest_size; 
-    //number of AIS type 4 messages to send
+    //number of AIS type 4 messages to send before sending TESLA message
     int number_of_messages = 1;
-    bool sendBF = false;
 
     //when 512 digest size concatente to 384 or 392
     switch(security_level){
@@ -236,14 +235,12 @@ int AIS_CAESAR_Tx(int security_level){
         input_digest_size = SHA512;
         output_digest_size = 32;
         number_of_messages = 2;
-        sendBF = true;
         break;
       case 4:
         //Tesla +BF in same message, 256 digest size
         input_digest_size = SHA512;
         output_digest_size = 20;
         number_of_messages = 4;
-        sendBF = true;
         break;
       /*
       case 5:
@@ -251,21 +248,18 @@ int AIS_CAESAR_Tx(int security_level){
         input_digest_size = SHA512;
         output_digest_size = input_digest_size;
         number_of_messages = 9;
-        sendBF = true;
         break;*/
       case 5:
         //Tesla +BF(2 slots) in sep. message, 160 digest size
         input_digest_size = SHA512;
         output_digest_size = 20;
         number_of_messages = 9;
-        sendBF = true;
         break;
       case 6:
         //Tesla +BF(3 slots) in sep. message, 512 digest size
         input_digest_size = SHA512;
         output_digest_size = 49;
         number_of_messages = 9;
-        sendBF = true;
         break;
 
       default:
@@ -360,7 +354,7 @@ int AIS_CAESAR_Tx(int security_level){
 
     }
 
-    cout<<"\n Value of i = "<<ith_timeslot<<endl;
+    cout<<"\n ith_timeslot = "<<ith_timeslot<<endl;
 
     //Starting TESLA protocol
     //Generation of random number for nonce
@@ -369,18 +363,19 @@ int AIS_CAESAR_Tx(int security_level){
     std::uniform_int_distribution<unsigned long long> dis;
     
     int n = 10 + (rand() % 4500);//mt_rand();
-    cout<<"\n Value of n = "<<n<<endl;
+    //cout<<"\n Value of n = "<<n<<endl;
    
     //Generating Master key
     SALT.len = 8;
     for (int i = 0; i < 8; i++) SALT.val[i] = i + 1; // set Salt
 
-    printf("Alice's Passphrase= %s\n", pp);
+    //printf("Alice's Passphrase= %s\n", pp);
 
     OCT_empty(&PW);
     OCT_jstring(&PW, pp);  // set Password from string
     
     //Generate Master key Km, of size EGS_ED25519 bytes derived from Password and Salt
+    //Use below ftns if you do not want use pre-generates values
     //PBKDF2(MC_SHA2, HASH_TYPE_ED25519, &Km, field_size_EGS, &PW, &SALT, 1000);
 
   //  printf("\n Km:\n");
@@ -410,7 +405,7 @@ int AIS_CAESAR_Tx(int security_level){
    // OCT_jstring(&auth_tag_message, (char *)message.data() );       
 
     HMAC(MC_SHA2, input_digest_size, &outputMAC, output_digest_size, &Ki, &auth_tag_message);
-    printf("\n HMAC length:\n %d", outputMAC.len);
+    //printf("\n HMAC length:\n %d", outputMAC.len);
     
     //Change Octet to char for transmission
     char char_payload[outputMAC.len*2 + 1];
@@ -444,7 +439,7 @@ int AIS_CAESAR_Tx(int security_level){
       string MAC = hextobin(string(char_payload));
       string Ki_key = hextobin(string(char_key));
       string bf = bloomf.get_string();
-      std::cout<<"\n bf: \n"<<bf;
+      //std::cout<<"\n bf: \n"<<bf;
 
       string payload = security_level_bits + app_meta_bits + Ki_key + MAC + bf;
       send_ais_message(NULL, payload, 8, NULL);
@@ -494,14 +489,6 @@ int main()
 {
 
     printf("\nStarting AIS_CAESAR protocol \n");
-
-    /*
-    do {
-        sleep(1);
-        fd1 = socket_init(PORT_RECEIVE);
-    }while(fd1 == -1);
-    printf("Connected to receive socket!\n");
-    */
 
     int security_level = SECURITY_LEVEL;
     if(WRITE_TESTS){

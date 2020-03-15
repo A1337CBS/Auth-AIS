@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -O3 -DNDEBUG  -shared -Wl,-soname,libgnuradio-aistx-1.0.0git.so.0.0.0 -o libgnuradio-aistx-1.0.0git.so.0.0.0 CMakeFiles/gnuradio-aistx.dir/Build_Frame_From_Input_impl.cc.o -lboost_filesystem -lboost_system -lgnuradio-runtime -lgnuradio-pmt -llog4cpp 

@@ -1,0 +1,453 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl" kind="class" language="C++" prot="public">
+    <compoundname>gr::aistx::Build_Frame_From_Input_impl</compoundname>
+    <basecompoundref refid="classgr_1_1aistx_1_1Build__Frame__From__Input" prot="public" virt="non-virtual">gr::aistx::Build_Frame_From_Input</basecompoundref>
+    <includes refid="Build__Frame__From__Input__impl_8h" local="no">Build_Frame_From_Input_impl.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a8465f87ae0a4994d3f6ca93f7dfa3ffa" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool gr::aistx::Build_Frame_From_Input_impl::d_repeat</definition>
+        <argsstring></argsstring>
+        <name>d_repeat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="32" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1ae0245720ad5246613f285b56ff97ceca" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool gr::aistx::Build_Frame_From_Input_impl::d_enable_NRZI</definition>
+        <argsstring></argsstring>
+        <name>d_enable_NRZI</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="33" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1ae0c2cb4def6cd84bb2ef29fa00fec9af" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool gr::aistx::Build_Frame_From_Input_impl::d_enable_input</definition>
+        <argsstring></argsstring>
+        <name>d_enable_input</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="34" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a3a1e2134c69b6aead573d11e8572aa6b" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* gr::aistx::Build_Frame_From_Input_impl::d_sentence</definition>
+        <argsstring></argsstring>
+        <name>d_sentence</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="35" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1adb1c1582bd09d273840f565c80255e3f" prot="private" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* gr::aistx::Build_Frame_From_Input_impl::payload</definition>
+        <argsstring></argsstring>
+        <name>payload</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="36" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a568af289fe2720c4cf569b7d46509d7d" prot="private" static="no" mutable="no">
+        <type>unsigned short</type>
+        <definition>unsigned short gr::aistx::Build_Frame_From_Input_impl::LEN_SENTENCE</definition>
+        <argsstring></argsstring>
+        <name>LEN_SENTENCE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="37" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a6df3da1c448beaa46d12c9b64aefcc28" prot="private" static="no" mutable="no">
+        <type>unsigned short</type>
+        <definition>unsigned short gr::aistx::Build_Frame_From_Input_impl::LEN_PAYLOAD</definition>
+        <argsstring></argsstring>
+        <name>LEN_PAYLOAD</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="38" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1af486982138e5b692d9fbc21a13b61dc7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::aistx::Build_Frame_From_Input_impl::Build_Frame_From_Input_impl</definition>
+        <argsstring>(const char *sentence, bool repeat, bool enable_NRZI, bool enable_input, const std::string &amp;len_tag_key)</argsstring>
+        <name>Build_Frame_From_Input_impl</name>
+        <param>
+          <type>const char *</type>
+          <declname>sentence</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>repeat</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enable_NRZI</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enable_input</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>len_tag_key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="42" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a7a9e32ea638b87b79e19a7a16c8c49a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::aistx::Build_Frame_From_Input_impl::~Build_Frame_From_Input_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~Build_Frame_From_Input_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="43" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1abf73e1769d0b890cab9f476a1e91c1d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::aistx::Build_Frame_From_Input_impl::dump_buffer</definition>
+        <argsstring>(const char *b, int buffer_size)</argsstring>
+        <name>dump_buffer</name>
+        <param>
+          <type>const char *</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>buffer_size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="45" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aa6fc6a2f3bb4429ea30bd670dc6ead1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char* gr::aistx::Build_Frame_From_Input_impl::int2bin</definition>
+        <argsstring>(int a, char *buffer, int buf_size)</argsstring>
+        <name>int2bin</name>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>buf_size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="46" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a331e98b9f3b0cf5752fc62537feda766" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::aistx::Build_Frame_From_Input_impl::stuff</definition>
+        <argsstring>(const char *in, char *out, int l_in)</argsstring>
+        <name>stuff</name>
+        <param>
+          <type>const char *</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>l_in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="47" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aebe9334bfe2fd66c9327f9cee31eac2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::aistx::Build_Frame_From_Input_impl::pack</definition>
+        <argsstring>(int orig_ascii, char *ret, int bits_per_byte)</argsstring>
+        <name>pack</name>
+        <param>
+          <type>int</type>
+          <declname>orig_ascii</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>ret</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>bits_per_byte</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="48" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a5fa1004e6565d3e0a57120d5e4113bd6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::aistx::Build_Frame_From_Input_impl::nrz_to_nrzi</definition>
+        <argsstring>(char *data, int length)</argsstring>
+        <name>nrz_to_nrzi</name>
+        <param>
+          <type>char *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="49" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aa0523f0f308cc03eb8585f24f59ab80e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::aistx::Build_Frame_From_Input_impl::reverse_bit_order</definition>
+        <argsstring>(char *data, int length)</argsstring>
+        <name>reverse_bit_order</name>
+        <param>
+          <type>char *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="50" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a0fe0da0f9d4fd35133142b2f5ac0f0c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned long</type>
+        <definition>unsigned long gr::aistx::Build_Frame_From_Input_impl::unpack</definition>
+        <argsstring>(char *buffer, int start, int length)</argsstring>
+        <name>unpack</name>
+        <param>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="51" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1abfd6d8431eaae5cef4741b3100be521b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::aistx::Build_Frame_From_Input_impl::compute_crc</definition>
+        <argsstring>(char *buffer, char *ret, unsigned int len)</argsstring>
+        <name>compute_crc</name>
+        <param>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>ret</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>len</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="52" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a1517ba7d88b6d5d0ebf0246673aea962" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::aistx::Build_Frame_From_Input_impl::byte_packing</definition>
+        <argsstring>(char *input_frame, unsigned char *out_byte, unsigned int len)</argsstring>
+        <name>byte_packing</name>
+        <param>
+          <type>char *</type>
+          <declname>input_frame</declname>
+        </param>
+        <param>
+          <type>unsigned char *</type>
+          <declname>out_byte</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>len</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="53" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a9b43ebb30c9ff51a4632051d5aaf0a16" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::aistx::Build_Frame_From_Input_impl::work</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="56" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="5">
+        <label>gr::aistx::Build_Frame_From_Input_impl</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>gr::tagged_stream_block</label>
+      </node>
+      <node id="6">
+        <label>gr::aistx::Build_Frame_From_Input</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="8">
+        <label>gr::aistx::Build_Frame_From_Input_impl</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>gr::tagged_stream_block</label>
+      </node>
+      <node id="9">
+        <label>gr::aistx::Build_Frame_From_Input</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input"/>
+        <childnode refid="10" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" line="30" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/lib/Build_Frame_From_Input_impl.h" bodystart="29" bodyend="60"/>
+    <listofallmembers>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1af486982138e5b692d9fbc21a13b61dc7" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>Build_Frame_From_Input_impl</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a1517ba7d88b6d5d0ebf0246673aea962" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>byte_packing</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1abfd6d8431eaae5cef4741b3100be521b" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>compute_crc</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1ae0c2cb4def6cd84bb2ef29fa00fec9af" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>d_enable_input</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1ae0245720ad5246613f285b56ff97ceca" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>d_enable_NRZI</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a8465f87ae0a4994d3f6ca93f7dfa3ffa" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>d_repeat</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a3a1e2134c69b6aead573d11e8572aa6b" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>d_sentence</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1abf73e1769d0b890cab9f476a1e91c1d4" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>dump_buffer</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aa6fc6a2f3bb4429ea30bd670dc6ead1f" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>int2bin</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a6df3da1c448beaa46d12c9b64aefcc28" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>LEN_PAYLOAD</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a568af289fe2720c4cf569b7d46509d7d" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>LEN_SENTENCE</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ae8248682e3a660f0bd60f9a7035369e2" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a5fa1004e6565d3e0a57120d5e4113bd6" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>nrz_to_nrzi</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aebe9334bfe2fd66c9327f9cee31eac2c" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>pack</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1adb1c1582bd09d273840f565c80255e3f" prot="private" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>payload</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1aa0523f0f308cc03eb8585f24f59ab80e" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>reverse_bit_order</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ac2c0aa1e2ac38ebdb2c16981b11e941a" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a331e98b9f3b0cf5752fc62537feda766" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>stuff</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a0fe0da0f9d4fd35133142b2f5ac0f0c1" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>unpack</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a9b43ebb30c9ff51a4632051d5aaf0a16" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>work</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl_1a7a9e32ea638b87b79e19a7a16c8c49a9" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input_impl</scope><name>~Build_Frame_From_Input_impl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

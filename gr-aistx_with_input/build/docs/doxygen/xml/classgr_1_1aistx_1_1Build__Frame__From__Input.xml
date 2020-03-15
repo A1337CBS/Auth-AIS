@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="classgr_1_1aistx_1_1Build__Frame__From__Input" kind="class" language="C++" prot="public">
+    <compoundname>gr::aistx::Build_Frame_From_Input</compoundname>
+    <basecompoundref prot="public" virt="virtual">tagged_stream_block</basecompoundref>
+    <derivedcompoundref refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl" prot="public" virt="non-virtual">gr::aistx::Build_Frame_From_Input_impl</derivedcompoundref>
+    <includes refid="Build__Frame__From__Input_8h" local="no">Build_Frame_From_Input.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgr_1_1aistx_1_1Build__Frame__From__Input_1ac2c0aa1e2ac38ebdb2c16981b11e941a" prot="public" static="no">
+        <type>boost::shared_ptr&lt; <ref refid="classgr_1_1aistx_1_1Build__Frame__From__Input" kindref="compound">Build_Frame_From_Input</ref> &gt;</type>
+        <definition>typedef boost::shared_ptr&lt;Build_Frame_From_Input&gt; gr::aistx::Build_Frame_From_Input::sptr</definition>
+        <argsstring></argsstring>
+        <name>sptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/include/aistx/Build_Frame_From_Input.h" line="39" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/include/aistx/Build_Frame_From_Input.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classgr_1_1aistx_1_1Build__Frame__From__Input_1ae8248682e3a660f0bd60f9a7035369e2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ac2c0aa1e2ac38ebdb2c16981b11e941a" kindref="member">sptr</ref></type>
+        <definition>static sptr gr::aistx::Build_Frame_From_Input::make</definition>
+        <argsstring>(const char *sentence, bool repeat, bool enable_NRZI, bool enable_input, const std::string &amp;len_tag_key)</argsstring>
+        <name>make</name>
+        <param>
+          <type>const char *</type>
+          <declname>sentence</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>repeat</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enable_NRZI</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enable_input</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>len_tag_key</declname>
+        </param>
+        <briefdescription>
+<para>Return a shared_ptr to a new instance of <ref refid="classgr_1_1aistx_1_1Build__Frame__From__Input" kindref="compound">aistx::Build_Frame_From_Input</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>To avoid accidental use of raw pointers, <ref refid="classgr_1_1aistx_1_1Build__Frame__From__Input" kindref="compound">aistx::Build_Frame_From_Input</ref>&apos;s constructor is in a private implementation class. <ref refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ae8248682e3a660f0bd60f9a7035369e2" kindref="member">aistx::Build_Frame_From_Input::make</ref> is the public interface for creating new instances. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/include/aistx/Build_Frame_From_Input.h" line="49" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>&lt;+description of block+&gt; </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>gr::aistx::Build_Frame_From_Input_impl</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input__impl"/>
+        <childnode refid="0" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>gr::tagged_stream_block</label>
+      </node>
+      <node id="0">
+        <label>gr::aistx::Build_Frame_From_Input</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="4">
+        <label>gr::tagged_stream_block</label>
+      </node>
+      <node id="3">
+        <label>gr::aistx::Build_Frame_From_Input</label>
+        <link refid="classgr_1_1aistx_1_1Build__Frame__From__Input"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/include/aistx/Build_Frame_From_Input.h" line="37" column="1" bodyfile="/home/ahmad/Documents/GRC/Implementation/Code/AIS_Security_Protocol/gr-aistx_with_input/include/aistx/Build_Frame_From_Input.h" bodystart="36" bodyend="50"/>
+    <listofallmembers>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ae8248682e3a660f0bd60f9a7035369e2" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input</scope><name>make</name></member>
+      <member refid="classgr_1_1aistx_1_1Build__Frame__From__Input_1ac2c0aa1e2ac38ebdb2c16981b11e941a" prot="public" virt="non-virtual"><scope>gr::aistx::Build_Frame_From_Input</scope><name>sptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
