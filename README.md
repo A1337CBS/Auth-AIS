@@ -10,7 +10,7 @@ A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up 
 <i>For further details, please refer to the paper.</i>
 
 # Why create this?
-Usage of AIS is increasing rapidly, yet literature on it is scarce. The available literature, provides solution on it that is not standard compliant or could be done just using a simple software update to add broadcast authentication AIS. Thus, our contribution is to raise awareness about this and provide a solution that is standard and backwards compatible.
+Usage of AIS is increasing rapidly, yet literature on it is scarce. The available literature, provides contribution on it that is not standard compliant or could be done just using a simple software update. Thus, our contribution is to raise awareness about this and provide a solution that is standard compliant and backwards compatible.
 
 # How to use
 This project has two parts, two C++ programs and a flowgraph in GNURadio. To set them up: </br>
