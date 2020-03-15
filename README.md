@@ -40,7 +40,7 @@ In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL
 
 <table>
   <tr>
-    <th><b>Security Level (t) </b></th>
+    <th style="text-align:center"><b>Security Level (t) </b></th>
     <th><i><b>Description</b></i></th>
   </tr>
   <tr>
