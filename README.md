@@ -44,31 +44,31 @@ In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL
     <th><i><b>Description</b></i></th>
   </tr>
   <tr>
-    <td>0</td>
-    <td>No Security. AIS communications are still performed in clear-text, without any authentication service.</td>
+    <td style="text-align:center">0</td>
+     <td>No Security. AIS communications are still performed in clear-text, without any authentication service.</td>
   </tr>
   <tr>
-    <td>1</td>
+    <td style="text-align:center">1</td>
     <td>Deterministic Security Configuration, Digest Size of 49 bytes, key size of 16 bytes, sent out for every AIS message (overhead=75%)</td>
   </tr>
   <tr>
-    <td>2</td>
+    <td style="text-align:center">2</td>
     <td>Deterministic Security Configuration, Digest Size of 21 bytes, key size of 16 bytes, sent out for every AIS message (overhead=66.67%)</td>
   </tr>
   <tr>
-    <td>3</td>
+    <td style="text-align:center">3</td>
     <td>Probabilistic Security Configuration, Option 1, BloomFilter size of 17 bytes, digest Size of 32 bytes, keysize of 16 bytes, sent out for every N=2 AIS messages (overhead=60%)</td>
   </tr>
     <tr>
-    <td>4</td>
+    <td style="text-align:center">4</td>
     <td>Probabilistic Security Configuration, Option 1, BloomFilter size of 29 bytes, digest Size of 20 bytes, keysize of 16 bytes, sent out for every N=4 AIS messages (overhead=42.86%)</td>
   </tr>
     <tr>
-    <td>5</td>
+    <td style="text-align:center">5</td>
     <td>Probabilistic Security Configuration, Option  2, BloomFilter size of 65 bytes, digest Size of 20 bytes, and key size of 16 bytes, sent out every N= 9 AIS messages (overhead=35.71%)</td>
   </tr>
     <tr>
-    <td>6</td>
+    <td style="text-align:center">6</td>
     <td>Probabilistic Security Configuration, Option  2, BloomFilter size of 65 bytes, digest Size of 49 bytes, and key size of 16 bytes, sent out every N=9 AIS messages (overhead=40%);</td>
   </tr>
 </table>
