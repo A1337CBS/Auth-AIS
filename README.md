@@ -26,17 +26,52 @@ This project has two parts, two C++ programs and a flowgraph in GNURadio. To set
 </p>
 
 # How to compile code
-To compile from source or use a different security level for main.cpp:
+To compile from source or use a different security level for main.cpp, go to src folder and use the following command:
 ```
     g++ -O2 -DSECURITY_LEVEL=1 main.cpp BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp core-master/cpp/core.a ./ais_receiver/*.c -o main
 ```
 
-To compile from source for receiver.cpp:
+To compile from source for receiver.cpp, go to src folder and use the following command:
 ```
     g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp -o recvr
 ```
 ## Security Level and other Flags
-In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL=<b>t</b></i> that ranges from 1 to 6.
+In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL=<b>t</b></i> that ranges from 0 to 6. Following table provides information about the different security levels.
+
+<table>
+  <tr>
+    <th><b>Security Level </b></th>
+    <th><i><b>Description</b></i></th>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>No Security. AIS communications are still performed in clear-text, without any authentication service.</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Deterministic Security Configuration, Digest Size of 49 bytes, key size of 16 bytes, sent out for every AIS message (overhead=75%)</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Deterministic Security Configuration, Digest Size of 21 bytes, key size of 16 bytes, sent out for every AIS message (overhead=66.67%)</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Probabilistic Security Configuration, Option 1, BloomFilter size of 17 bytes, digest Size of 32 bytes, keysize of 16 bytes, sent out for every N=2 AIS messages (overhead=60%)</td>
+  </tr>
+    <tr>
+    <td>4</td>
+    <td>Probabilistic Security Configuration, Option 1, BloomFilter size of 29 bytes, digest Size of 20 bytes, keysize of 16 bytes, sent out for every N=4 AIS messages (overhead=42.86%)</td>
+  </tr>
+    <tr>
+    <td>5</td>
+    <td>Probabilistic Security Configuration, Option  2, BloomFilter size of 65 bytes, digest Size of 20 bytes, and key size of 16 bytes, sent out every N= 9 AIS messages (overhead=35.71%)</td>
+  </tr>
+    <tr>
+    <td>6</td>
+    <td>Probabilistic Security Configuration, Option  2, BloomFilter size of 65 bytes, digest Size of 49 bytes, and key size of 16 bytes, sent out every N=9 AIS messages (overhead=40%);</td>
+  </tr>
+</table>
 
 Other flags include: <br />
     -DPORT_SEND or -DPORT_RECEIVE to set another port for send/receive sockets <br />
