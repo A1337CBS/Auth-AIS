@@ -3,12 +3,13 @@
 #include <cstdint> 
 #include <array>
 #include <string>
+#include <chrono>
 
 struct BloomFilter {
   BloomFilter(uint64_t size, uint8_t numHashes);
   ~BloomFilter();
   
-  void add(const uint8_t *data, std::size_t len);
+  void add(const uint8_t *data, std::size_t len, bool write_test);
   bool possiblyContains(const uint8_t *data, std::size_t len) const;
 
   int Encode_BloomFilter(int);

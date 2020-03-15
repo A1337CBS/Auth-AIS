@@ -1,16 +1,53 @@
 //
 //g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp FastAC_fix-nh/FastAC/arithmetic_codec.cpp -o recvr
 //g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp -o recvr
-#include "core-master/cpp/ecdh_ED25519.h"
-#include "ais_receiver/ais_rx.h"
-#include "BloomFilter.h"
-#include <vector>
+#include "stdafx.h"
+
 
 using namespace B256_56;
 using namespace ED25519;
 #define field_size_EFS EFS_ED25519
 #define field_size_EGS EGS_ED25519
 #define MAX_SLOTS_DATA_SIZE 66 
+
+
+void process_mem_usage(double& vm_usage, double& resident_set)
+{
+   using std::ios_base;
+   using std::ifstream;
+   using std::string;
+
+   vm_usage     = 0.0;
+   resident_set = 0.0;
+
+   // 'file' stat seems to give the most reliable results
+   //
+   ifstream stat_stream("/proc/self/stat",ios_base::in);
+
+   // dummy vars for leading entries in stat that we don't care about
+   //
+   string pid, comm, state, ppid, pgrp, session, tty_nr;
+   string tpgid, flags, minflt, cminflt, majflt, cmajflt;
+   string utime, stime, cutime, cstime, priority, nice;
+   string O, itrealvalue, starttime;
+
+   // the two fields we want
+   //
+   unsigned long vsize;
+   long rss;
+
+   stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
+               >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
+               >> utime >> stime >> cutime >> cstime >> priority >> nice
+               >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
+
+   stat_stream.close();
+
+   long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
+   vm_usage     = vsize / 1024.0;
+   resident_set = rss * page_size_kb;
+}
+
 
 /**	
  *  @brief Convert binary string to hex string
@@ -81,6 +118,11 @@ int main(void)
    // for(message_count = 0; message_count < ais_config.total_messages; message_count++) {
 
     while(true){
+
+        double vm, rss;
+        process_mem_usage(vm, rss);
+        std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
+
         ais_message_t ais[1];
         ais[message_count].fd = fd1;
         ais[message_count].d.seqnr = 0;
@@ -114,43 +156,43 @@ int main(void)
                     input_digest_size = SHA512;
                     output_digest_size = 49;
                     number_of_messages = 1;
-                    
                     break;
                 case 2:
                     //Tesla only, 160 bits digest size
                     input_digest_size = SHA256;
-                    output_digest_size = 20;
+                    output_digest_size = 21;
                     number_of_messages = 1;
                     break;
                 case 3:
-                    //Tesla +BF in same message, 160 digest size
+                    //Tesla +BF in same message, 256 digest size
                     input_digest_size = SHA256;
-                    output_digest_size = 20;
-                    number_of_messages = 4;
+                    output_digest_size = 32;
+                    number_of_messages = 2;
                     sendBF = true;
                     break;
                 case 4:
                     //Tesla +BF in same message, 256 digest size
                     input_digest_size = SHA256;
-                    output_digest_size = SHA256;
-                    number_of_messages = 2;
+                    output_digest_size = 20;
+                    number_of_messages = 4;
                     sendBF = true;
                     break;
+                /*
                 case 5:
                     //Tesla +BF(2 slots) in sep. message, 512 digest size
                     input_digest_size = SHA256;
                     output_digest_size = input_digest_size;
                     number_of_messages = 9;
                     sendBF = true;
-                    break;
-                case 6:
-                    //Tesla +BF(3 slots) in sep. message, 160 digest size
+                    break;*/
+                case 5:
+                    //Tesla +BF(2 slots) in sep. message, 160 digest size
                     input_digest_size = SHA512;
                     output_digest_size = 20;
                     number_of_messages = 9;
                     sendBF = true;
                     break;
-                case 7:
+                case 6:
                     //Tesla +BF(3 slots) in sep. message, 512 digest size
                     input_digest_size = SHA512;
                     output_digest_size = 49;
@@ -330,7 +372,13 @@ int main(void)
                         break;
                     }
                     std::string message = ais_vector[j].d.message;
+
+                    auto start = std::chrono::high_resolution_clock::now();
                     std::cout<<"\nContains "<< (bloomf.possiblyContains((const unsigned char *)message.c_str(), message.length()));
+                    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                    long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+                    printf("\nTime taken to check if element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+                    
                 }
 
                 if (!OCT_comp(&outputMAC, &outputMAC_recvd))

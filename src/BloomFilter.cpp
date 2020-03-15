@@ -1,6 +1,8 @@
 #include "BloomFilter.h"
 #include <iostream>
+#include <fstream>
 #include "smhasher-master/src/MurmurHash3.h"
+#define SECURITY_LEVEL 6
 
 BloomFilter::BloomFilter(uint64_t size, uint8_t numHashes)
       : m_bits(size),
@@ -23,8 +25,36 @@ inline uint64_t nthHash(uint8_t n,
     return (hashA + n * hashB) % filterSize;
 }
 
-void BloomFilter::add(const uint8_t *data, std::size_t len) {
+void BloomFilter::add(const uint8_t *data, std::size_t len, bool write_test=false) {
+  
+ // auto start = std::chrono::high_resolution_clock::now();
   auto hashValues = hash(data, len);
+ // auto elapsed = std::chrono::high_resolution_clock::now() - start;
+ // long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+ // printf("\n Time taken to hash element for B.F. : %lld nanoseconds\n\n",  nanoseconds);
+  
+  //tests
+  
+  if(write_test){
+    std::ofstream outfile;
+    outfile.open("test_1_sec_lvl_"+std::to_string(SECURITY_LEVEL)+".csv", std::ios::out | std::ios::app );
+    outfile << "\n Time taken to hash element for B.F. in nanoseconds \n";
+    for (int i=0; i<505; i++)
+    {
+          auto start = std::chrono::high_resolution_clock::now();
+          auto hashValues = hash(data, len);
+          auto elapsed = std::chrono::high_resolution_clock::now() - start;
+          long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+        //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+          
+          // write inputted data into the file.
+          outfile << nanoseconds << ", ";
+                  
+    }
+    // close the opened file.
+    outfile.close();
+  }
+  
 
   for (int n = 0; n < m_numHashes; n++) {
       m_bits[nthHash(n, hashValues[0], hashValues[1], m_bits.size())] = true;

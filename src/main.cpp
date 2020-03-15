@@ -18,25 +18,45 @@ change name from main to transmitter
 fix message 4 encoding
 */
 //Generate key chain commit
-#include "core-master/cpp/randapi.h"
-#include <random>
-#include <bitset>
-#include <iostream>
-#include <chrono>
-#include "core-master/cpp/ecdh_ED25519.h"
-#include "BloomFilter.h"
-#include "ais_receiver/ais_rx.h"
-using namespace std;
-using namespace B256_56;
-using namespace ED25519;
-#define field_size_EFS EFS_ED25519
-#define field_size_EGS EGS_ED25519
-#define AESKEY AESKEY_ED25519
-#define MAX_SLOTS 3
-#define MAX_SLOTS_DATA_SIZE 66 
-#ifndef PORT_SEND
-#define PORT_SEND 5200
-#endif
+#include "stdafx.h"
+
+void process_mem_usage(double& vm_usage, double& resident_set)
+{
+   using std::ios_base;
+   using std::ifstream;
+   using std::string;
+
+   vm_usage     = 0.0;
+   resident_set = 0.0;
+
+   // 'file' stat seems to give the most reliable results
+   //
+   ifstream stat_stream("/proc/self/stat",ios_base::in);
+
+   // dummy vars for leading entries in stat that we don't care about
+   //
+   string pid, comm, state, ppid, pgrp, session, tty_nr;
+   string tpgid, flags, minflt, cminflt, majflt, cmajflt;
+   string utime, stime, cutime, cstime, priority, nice;
+   string O, itrealvalue, starttime;
+
+   // the two fields we want
+   //
+   unsigned long vsize;
+   long rss;
+
+   stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
+               >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
+               >> utime >> stime >> cutime >> cstime >> priority >> nice
+               >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
+
+   stat_stream.close();
+
+   long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
+   vm_usage     = vsize / 1024.0;
+   resident_set = rss * page_size_kb;
+}
+
 
 /**	
  *  @brief Convert hex string to binary string
@@ -224,7 +244,45 @@ int send_ais_message(BloomFilter &bf,string payload, int ais_message_type=4, oct
             OCT_jstring(auth_tag_message, (char *)message.data() );
            //  OCT_output(auth_tag_message);
            }
-           bf.add((const unsigned char *)message.c_str(), message.length());
+
+          bf.add((const unsigned char *)message.c_str(), message.length(), false);
+
+          //Tests
+          
+          ofstream outfile;
+          outfile.open("test_1_sec_lvl_"+to_string(SECURITY_LEVEL)+".csv", ios::out | ios::app );
+          outfile << "\n Time taken to add/map element in B.F. in nanoseconds \n";
+          bool write_test=true;
+          for (int i=0; i<505; i++){
+                auto start = std::chrono::high_resolution_clock::now();
+                bf.add((const unsigned char *)message.c_str(), message.length(), write_test);
+                auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+              //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+                write_test=false;
+
+                      
+                // write inputted data into the file.
+                outfile << nanoseconds << ", ";
+                        
+          }
+          
+          outfile << "\n\n Time taken to check if element in B.F. in nanoseconds \n";
+          for (int i=0; i<505; i++){
+                auto start = std::chrono::high_resolution_clock::now();
+                bf.possiblyContains((const unsigned char *)message.c_str(), message.length());
+                auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                long long nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+              //  printf("\n Time taken to add/map element in B.F. : %lld nanoseconds\n\n",  nanoseconds);
+                  
+                // write inputted data into the file.
+                outfile << nanoseconds << ", ";
+                      
+          }
+                          // close the opened file.
+                outfile.close();
+          
+           
         }   
 
         int res = send_message_2_sock(message);
@@ -241,7 +299,7 @@ int send_ais_message(BloomFilter &bf,string payload, int ais_message_type=4, oct
 }
 
 
-int AIS_Tesla(){
+int AIS_Tesla(int security_level){
   /*
   We will have 4 security levels:
 - Level 1: TESLA-only,  TESLA Digest Size: 512 bits, Overhead: 300%. Usage Scenario: off-shore, no congestion.
@@ -261,7 +319,7 @@ int AIS_Tesla(){
 - Level 5: TESLA + BF in same message. TESLA Digest Size: 160 bits, Overhead: ~60%. Usage Scenario: port, heavy congestion, vehicles moving.
   */
 
-    int security_level = 5;
+
     int key_size=16;
     int application_meta_size=1;
     //input_digest_size, can only be 32, 48 or 64
@@ -281,42 +339,43 @@ int AIS_Tesla(){
       case 2:
         //Tesla only, 160 bits digest size
         input_digest_size = SHA256;
-        output_digest_size = 20;
+        output_digest_size = 21;
         number_of_messages = 1;
         break;
       case 3:
-         //Tesla +BF in same message, 160 digest size
+         //Tesla +BF in same message, 256 digest size
         input_digest_size = SHA256;
-        output_digest_size = 20;
-        number_of_messages = 4;
+        output_digest_size = 32;
+     //   number_of_messages = 2;
         sendBF = true;
         break;
       case 4:
         //Tesla +BF in same message, 256 digest size
         input_digest_size = SHA256;
-        output_digest_size = SHA256;
-        number_of_messages = 2;
+        output_digest_size = 20;
+       // number_of_messages = 4;
         sendBF = true;
         break;
+      /*
       case 5:
         //Tesla +BF(2 slots) in sep. message, 512 digest size
         input_digest_size = SHA256;
         output_digest_size = input_digest_size;
         number_of_messages = 9;
         sendBF = true;
-        break;
-      case 6:
-        //Tesla +BF(3 slots) in sep. message, 160 digest size
+        break;*/
+      case 5:
+        //Tesla +BF(2 slots) in sep. message, 160 digest size
         input_digest_size = SHA512;
         output_digest_size = 20;
-        number_of_messages = 9;
+        //number_of_messages = 9;
         sendBF = true;
         break;
-      case 7:
+      case 6:
         //Tesla +BF(3 slots) in sep. message, 512 digest size
         input_digest_size = SHA512;
         output_digest_size = 49;
-        number_of_messages = 9;
+       // number_of_messages = 9;
         sendBF = true;
         break;
 
@@ -326,6 +385,7 @@ int AIS_Tesla(){
 
     //SETTING UP B.F.
     int z = MAX_SLOTS_DATA_SIZE - (output_digest_size+key_size+application_meta_size);
+    std::cout<<"\n Z: "<<z;
     if(security_level==5 || security_level==6|| security_level==7){
       z = MAX_SLOTS_DATA_SIZE - application_meta_size;
     }
@@ -509,21 +569,6 @@ int AIS_Tesla(){
 int main()
 {
     int i,fd1;
-    unsigned long ran;
-   
-    time((time_t *)&ran);
-    char raw[100];
-    octet RAW = {0, sizeof(raw), raw};
-    csprng RNG;                // Crypto Strong RNG
-
-    RAW.len = 100;              // fake random seed source
-    RAW.val[0] = ran;
-    RAW.val[1] = ran >> 8;
-    RAW.val[2] = ran >> 16;
-    RAW.val[3] = ran >> 24;
-    for (i = 4; i < 100; i++) RAW.val[i] = i;
-
-    CREATE_CSPRNG(&RNG, &RAW);  // initialise strong RNG
 
     printf("\nStarting SecureAIS protocol \n");
 
@@ -534,15 +579,26 @@ int main()
     }while(fd1 == -1);
     printf("Connected to receive socket!\n");
     */
+    int security_level = SECURITY_LEVEL;
+          ofstream outfile;
+          outfile.open("test_1_sec_lvl_"+to_string(security_level)+".csv", ios::out | ios::app );
+
+          outfile << "Security level = " << security_level<< "\n";
+                  
+          // close the opened file.
+          outfile.close();
 
         auto start = std::chrono::high_resolution_clock::now();
-        AIS_Tesla();
+        double vm, rss;
+        process_mem_usage(vm, rss);
+        std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
+        AIS_Tesla(security_level);
+        process_mem_usage(vm, rss);
+        std::cout << "VM: " << vm << "; RSS: " << rss << std::endl;
         auto elapsed = std::chrono::high_resolution_clock::now() - start;
         long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-        printf("\nTime taken for exchange: %lld microseconds\n\n",  microseconds);
+        printf("\nTime taken to transmit: %lld microseconds\n\n",  microseconds);
 
-
-    KILL_CSPRNG(&RNG);
 }
 
 
