@@ -1,17 +1,16 @@
-# AIS_CAESAR - Providing Broadcast Authentication for Vessels Communications (Proof of Concept)
-CAESAR is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish secure pairwise session keys with neighboring entities, being them either vessels or port authorities. 
+# AIS_CAESAR - Providing Broadcast Authentication for Maritime Vessels (Proof of Concept)
+CAESAR is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish broadcast authentication with neighboring entities, being them either vessels or port authorities. 
 
-
-A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up broadcast authentication between two AIS transceivers. It supports different security levels: none, <i>1, 2, 3,4,5 </i> and <i>6</i> that can support different scenarios that a maritime vessel could require.
+A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up broadcast authentication between two AIS transceivers. It supports different security levels: <i>1, 2, 3,4,5 </i> and <i>6</i> that can support different scenarios that a maritime vessel could require.
 
 <p align="center">
-     <img alt="ais_tranceiver_flowgraph" src="./images/key-agr.png" width="500">
+     <img alt="ais_tranceiver_flowgraph" src="./images/testbed.jpg" width="500">
 </p>
 
 <i>For further details, please refer to the paper.</i>
 
 # Why create this?
-Nobody has done it in a way that is standard compliant or requires just a software update to make a security service work on AIS. In theory two friendly ships can implement all of this before leaving harbour and then communicate in secrecy.
+Usage of AIS is increasing rapidly, yet literature on it is scarce. The available literature, provides solution on it that is not standard compliant or could be done just using a simple software update to add broadcast authentication AIS. Thus, our contribution is to raise awareness about this and provide a solution that is standard and backwards compatible.
 
 # How to use
 This project has two parts, two C++ programs and a flowgraph in GNURadio. To set them up: </br>
@@ -19,51 +18,23 @@ This project has two parts, two C++ programs and a flowgraph in GNURadio. To set
 2) Install <i>gr-aistx_with_input</i> block to gnuradio (instructions inside the block folder on how to compile and install it). If you are using PyBOMBS, please initialize your environment first. <br />
 3) Open <i>ais_transceiever.grc</i> flowgraph in GNURadio.  <br />
 4) Make sure ports <b>51999</b> and <b>5200</b> are not adopted by any network protocol. <br />
-5) Execute main or compile code from the source.<br />
+5) Execute recvr or compile receiver.cpp code from the source to start the receiver.<br />
+6) Execute main or compile main.cpp code from the source to start the transmitter.<br />
 
 <p align="center">
      <img alt="ais_tranceiver_flowgraph" src="./images/ais_tranceiver_flowgraph.png" width="500">
 </p>
 
 # How to compile code
-To compile from source or use a different security level:
+To compile from source or use a different security level for main.cpp:
 ```
-    g++ -O2 main.cpp -DSECURITY_LEVEL=1 ./secure_ais_protocol.cpp ./ais_receiver/*.c core-master/cpp/core.a -o main
+    g++ -O2 -DSECURITY_LEVEL=1 main.cpp BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp core-master/cpp/core.a ./ais_receiver/*.c -o main
 ```
-## Security Level and other Flags
-In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL=<b>t</b></i> that ranges from 0 to 4.
 
-<table>
-  <tr>
-    <th><b>Security Level (bits)</b></th>
-    <th><i><b>t</b></i></th>
-  </tr>
-  <tr>
-    <td>80</td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td>128</td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td>192</td>
-    <td>3</td>
-  </tr>
-  <tr>
-    <td>256</td>
-    <td>4</td>
-  </tr>
-</table>
-
-Other flags include: <br />
-    -DPORT_SEND or -DPORT_RECEIVE to set another port for send/receive sockets <br />
-    -DGEN_KEYS = true or false to set whether to generate keys or not <br />
-
-# Formal verification with ProVerif
-The security properties of SecureAIS have been verified formally and experimentally by using the open-source tool ProVerif, demonstrating enhanced security protection with respect to state-of-the-art approaches.
-
-In order to test the security properties, download the file <a href="sais.pv">sais.pv</a> and run: `proverif sais.pv | grep "RESULT"`.
+To compile from source for receiver.cpp:
+```
+    g++ -O2 receiver.cpp ais_receiver/*.c core-master/cpp/core.a BloomFilter.cpp smhasher-master/src/MurmurHash3.cpp -o recvr
+```
 
 # Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

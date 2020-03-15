@@ -74,7 +74,7 @@ string encode_ais_message_8(string payload, int src_mmsi=247320162){
     //application bits, 1 byte metadata are custom bits for self use
     string application_meta_bits = std::bitset<8>(0).to_string(); 
     string appid_dac = std::bitset<10>(0).to_string(); 
-    string appid_fi = std::bitset<6>(50).to_string(); 
+    string appid_fi = std::bitset<6>(51).to_string(); 
   
     return type+repeat+mmsi+spare+appid_dac+appid_fi+payload;
 }
