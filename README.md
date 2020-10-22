@@ -1,4 +1,4 @@
-# AIS_CAESAR - Providing Broadcast Authentication for Maritime Vessels (Proof of Concept)
+# CAESAR: Secure, Flexible, and Backward-Compatible Authentication of Vessels AIS Broadcasts (Proof of Concept)
 CAESAR is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish broadcast authentication with neighboring entities, being them either vessels or port authorities. 
 
 A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up broadcast authentication between two AIS transceivers. It supports different security levels: <i>1, 2, 3, 4, 5 </i> and <i>6</i> that can support different scenarios that a maritime vessel could require.
@@ -40,7 +40,7 @@ In order to set a different security level, you can add flag <i>-DSECURITY_LEVEL
 
 <table>
   <tr>
-    <th style="text-align:center"><b>Security Level (t) </b></th>
+    <th style="text-align:center"><b>Security Level</b></th>
     <th><i><b>Description</b></i></th>
   </tr>
   <tr>
