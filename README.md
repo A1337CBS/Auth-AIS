@@ -14,7 +14,7 @@ A small demo showing Auth-AIS in rejecting impersonation and replay attacks. For
 
 <div style="text-align:center"> 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=cnn8EZb4ksI
-" target="_blank"><img src="http://img.youtube.com/vi/cnn8EZb4ksI/0.jpg" 
+" target="_blank"><img src="./images/demo.jpg" 
 alt="Auth-AIS Demo" width="580" height="580" border="10" /></a>
 </div>
 
