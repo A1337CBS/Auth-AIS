@@ -1,5 +1,5 @@
-# CAESAR: Secure, Flexible, and Backward-Compatible Authentication of Vessels AIS Broadcasts (Proof of Concept)
-CAESAR is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish broadcast authentication with neighboring entities, being them either vessels or port authorities. 
+# Auth-AIS: Secure, Flexible, and Backward-Compatible Authentication of Vessels AIS Broadcasts (Proof of Concept)
+Auth-AIS is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish broadcast authentication with neighboring entities, being them either vessels or port authorities. 
 
 A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up broadcast authentication between two AIS transceivers. It supports different security levels: <i>1, 2, 3, 4, 5 </i> and <i>6</i> that can support different scenarios that a maritime vessel could require.
 
@@ -8,6 +8,15 @@ A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up 
 </p>
 
 <i>For further details, please refer to the paper.</i>
+
+# Demo
+A small demo showing Auth-AIS in rejecting impersonation and replay attacks. For details see the demo folder
+
+<p align="center">
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=cnn8EZb4ksI
+" target="_blank"><img src="./images/demo.jpg" 
+alt="Auth-AIS Demo" width="500" border="10" /></a>
+</p>
 
 # Why create this?
 Usage of AIS is increasing rapidly, yet literature on it is scarce. The available literature, provides contribution on it that is not standard compliant or could be done just using a simple software update. Thus, our contribution is to raise awareness about this and provide a solution that is standard compliant and backwards compatible.
@@ -94,4 +103,4 @@ https://github.com/trendmicro/ais   <br />
 https://github.com/juan0fran/ais_rx <br />
 
 ## License
-CAESAR is released under the BSD 3-Clause <a href="LICENSE">license</a>.
+Auth-AIS is released under the BSD 3-Clause <a href="LICENSE">license</a>.
