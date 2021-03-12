@@ -12,7 +12,7 @@ A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up 
 # Demo
 A small demo showing Auth-AIS in rejecting impersonation and replay attacks. For details see the demo folder
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=cnn8EZb4ksI
+<a style="text-align: center;" href="http://www.youtube.com/watch?feature=player_embedded&v=cnn8EZb4ksI
 " target="_blank"><img src="http://img.youtube.com/vi/cnn8EZb4ksI/0.jpg" 
 alt="Auth-AIS Demo" width="580" height="580" border="10" /></a>
 
