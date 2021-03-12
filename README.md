@@ -1,5 +1,5 @@
-# CAESAR: Secure, Flexible, and Backward-Compatible Authentication of Vessels AIS Broadcasts (Proof of Concept)
-CAESAR is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish broadcast authentication with neighboring entities, being them either vessels or port authorities. 
+# Auth-AIS: Secure, Flexible, and Backward-Compatible Authentication of Vessels AIS Broadcasts (Proof of Concept)
+Auth-AIS is a Broadcast Authentication protocol specifically designed to meet the features and bandwidth constraints of the Automatic Identification System (AIS) communication technology. It has been designed as a standard-compliant AIS application, that can be installed by Class-A and Class-B AIS transceivers to establish broadcast authentication with neighboring entities, being them either vessels or port authorities. 
 
 A Proof of Concept using GNURadio and Ettus Research X310 SDRs on how to set up broadcast authentication between two AIS transceivers. It supports different security levels: <i>1, 2, 3, 4, 5 </i> and <i>6</i> that can support different scenarios that a maritime vessel could require.
 
@@ -94,4 +94,4 @@ https://github.com/trendmicro/ais   <br />
 https://github.com/juan0fran/ais_rx <br />
 
 ## License
-CAESAR is released under the BSD 3-Clause <a href="LICENSE">license</a>.
+Auth-AIS is released under the BSD 3-Clause <a href="LICENSE">license</a>.
